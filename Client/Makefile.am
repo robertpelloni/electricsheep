@@ -38,6 +38,7 @@ Hud.cpp \
 ../Networking/Networking.cpp \
 ../DisplayOutput/LoadDDS.cpp \
 ../DisplayOutput/Image.cpp \
+../DisplayOutput/OpenGL/GLee.c \
 ../DisplayOutput/OpenGL/RendererGL.cpp \
 ../DisplayOutput/OpenGL/glx.cpp \
 ../DisplayOutput/OpenGL/ShaderGL.cpp \

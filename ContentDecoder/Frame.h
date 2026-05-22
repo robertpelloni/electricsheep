@@ -1,6 +1,10 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
 //    electricsheep for windows - collaborative screensaver
+extern "C" {
+#include <libavcodec/avcodec.h>
+#include <libavutil/imgutils.h>
+}
 //    Copyright 2003 Nicholas Long <nlong@cox.net>
 //	  electricsheep for windows is based of software
 //	  written by Scott Draves <source@electricsheep.org>
@@ -75,7 +79,7 @@ class CVideoFrame
 		AVFrame		*m_pFrame;
 
 	public:
-		CVideoFrame( AVCodecContext *_pCodecContext, PixelFormat _format, std::string _filename ) : m_pFrame(NULL)
+		CVideoFrame( AVCodecContext *_pCodecContext, AVPixelFormat _format, std::string _filename ) : m_pFrame(NULL)
 			{
 				assert( _pCodecContext );
 				if ( _pCodecContext == NULL)
@@ -103,9 +107,9 @@ class CVideoFrame
 				
 				if (m_pFrame != NULL)
 				{
-					int32 numBytes = avpicture_get_size( _format, _pCodecContext->width, _pCodecContext->height );
+					int32 numBytes = av_image_get_buffer_size( _format, _pCodecContext->width, _pCodecContext->height, 1 );
 					m_spBuffer = new Base::CAlignedBuffer( static_cast<uint32>(numBytes) * sizeof(uint8) );
-					avpicture_fill( (AVPicture *)m_pFrame, m_spBuffer->GetBufferPtr(), _format, _pCodecContext->width, _pCodecContext->height );
+					av_image_fill_arrays(m_pFrame->data, m_pFrame->linesize, m_spBuffer->GetBufferPtr(), _format, _pCodecContext->width, _pCodecContext->height, 1 );
 				} else
 					g_Log->Error( "m_pFrame == NULL" );
 			}

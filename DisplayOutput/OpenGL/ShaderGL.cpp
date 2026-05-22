@@ -3,10 +3,10 @@
 #include <string.h>
 #include <stdlib.h>
 #ifndef LINUX_GNU
-#include	"./OpenGL/GLee.h"
+
 #include <OpenGL/CGLMacro.h>
 #else
-#include<GLee.h>
+#include "GLee.h"
 #endif
 
 #include	"Exception.h"

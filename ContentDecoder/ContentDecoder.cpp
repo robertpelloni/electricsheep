@@ -38,7 +38,7 @@ namespace ContentDecoder
 	CContentDecoder.
 
 */
-CContentDecoder::CContentDecoder( spCPlaylist _spPlaylist, bool _bStartByRandom, bool _bCalculateTransitions, const uint32 _queueLenght, PixelFormat _wantedFormat )
+CContentDecoder::CContentDecoder( spCPlaylist _spPlaylist, bool _bStartByRandom, bool _bCalculateTransitions, const uint32 _queueLenght, AVPixelFormat _wantedFormat )
 {
 	g_Log->Info( "CContentDecoder()" );
 	m_FadeCount = static_cast<uint32>(g_Settings()->Get("settings.player.fadecount", 30));
@@ -46,7 +46,7 @@ CContentDecoder::CContentDecoder( spCPlaylist _spPlaylist, bool _bStartByRandom,
 	av_log_set_level( AV_LOG_ERROR );
 
 	//	Register all formats and codecs.
-	av_register_all();
+
 	
     m_pScaler = NULL;
     m_ScalerWidth = 0;
@@ -62,7 +62,7 @@ CContentDecoder::CContentDecoder( spCPlaylist _spPlaylist, bool _bStartByRandom,
 	
 	m_NextSheepQueue.setMaxQueueElements(10);
 
-	m_WantedPixelFormat = _wantedFormat;
+	m_WantedAVPixelFormat = _wantedFormat;
 
 	m_bStop = true;
 
@@ -159,7 +159,7 @@ bool	CContentDecoder::Open( sOpenVideoInfo *ovi )
 #ifdef USE_NEW_FFMPEG_API
 	if( DumpError( avformat_open_input( &ovi->m_pFormatContext, _filename.c_str(), NULL, NULL ) ) < 0 )
 #else
-	if( DumpError( av_open_input_file( &ovi->m_pFormatContext, _filename.c_str(), NULL, 0, NULL ) ) < 0 )
+	if( DumpError( avformat_open_input( &ovi->m_pFormatContext, _filename.c_str(), NULL, NULL ) ) < 0 )
 #endif
 	{
 		g_Log->Warning( "Failed to open %s...", _filename.c_str() );
@@ -169,10 +169,10 @@ bool	CContentDecoder::Open( sOpenVideoInfo *ovi )
 #ifdef USE_NEW_FFMPEG_API
 	if( DumpError( avformat_find_stream_info( ovi->m_pFormatContext, NULL ) ) < 0 )
 #else
-	if( DumpError( av_find_stream_info( ovi->m_pFormatContext ) ) < 0 )
+	if( DumpError( avformat_find_stream_info( ovi->m_pFormatContext ) ) < 0 )
 #endif
 	{
-		g_Log->Error( "av_find_stream_info failed with %s...", _filename.c_str() );
+		g_Log->Error( "avformat_find_stream_info failed with %s...", _filename.c_str() );
 		return false;
 	}
 
@@ -182,7 +182,7 @@ bool	CContentDecoder::Open( sOpenVideoInfo *ovi )
 	ovi->m_VideoStreamID = -1;
     for( uint32 i=0; i<ovi->m_pFormatContext->nb_streams; i++ )
     {
-        if( ovi->m_pFormatContext->streams[i]->codec->codec_type == AVMEDIA_TYPE_VIDEO )
+        if( ovi->m_pFormatContext->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO )
         {
             ovi->m_pVideoStream = ovi->m_pFormatContext->streams[i];
             ovi->m_VideoStreamID = static_cast<int32>(i);
@@ -196,14 +196,9 @@ bool	CContentDecoder::Open( sOpenVideoInfo *ovi )
         return false;
     }
 
-	//	Find video codec.
-    ovi->m_pVideoCodecContext = ovi->m_pFormatContext->streams[ ovi->m_VideoStreamID ]->codec;
-    if( ovi->m_pVideoCodecContext == NULL )
-    {
-        g_Log->Error( "Video CodecContext not found for %s", _filename.c_str() );
-        return false;
-    }
-
+    // Find video codec.
+    ovi->m_pVideoCodecContext = avcodec_alloc_context3(NULL);
+    avcodec_parameters_to_context(ovi->m_pVideoCodecContext, ovi->m_pFormatContext->streams[ovi->m_VideoStreamID]->codecpar);
     ovi->m_pVideoCodec = avcodec_find_decoder( ovi->m_pVideoCodecContext->codec_id );
 
     if( ovi->m_pVideoCodec == NULL )
@@ -228,11 +223,8 @@ bool	CContentDecoder::Open( sOpenVideoInfo *ovi )
         return false;
     }
 	
-#ifdef USE_NEW_FFMPEG_ALLOC_API
+
     ovi->m_pFrame = av_frame_alloc();
-#else
-    ovi->m_pFrame = avcodec_alloc_frame();
-#endif
 	
 	if (ovi->m_pVideoStream->nb_frames > 0)
 		ovi->m_totalFrameCount = static_cast<uint32>(ovi->m_pVideoStream->nb_frames);
@@ -513,7 +505,7 @@ CVideoFrame *CContentDecoder::ReadOneFrame(sOpenVideoInfo *ovi)
 
 	while(true)
     {
-		av_init_packet(&packet);
+		memset(&packet, 0, sizeof(packet));
 		
 		packet.data = NULL;
 		packet.size = 0;
@@ -523,7 +515,7 @@ CVideoFrame *CContentDecoder::ReadOneFrame(sOpenVideoInfo *ovi)
 			if ( av_read_frame( pFormatContext, &packet ) < 0 )
 			{
 				ovi->m_ReadingTrailingFrames = true;
-				av_free_packet(&packet);
+				av_packet_unref(&packet);
 				continue;
 			}
 		}
@@ -542,18 +534,19 @@ CVideoFrame *CContentDecoder::ReadOneFrame(sOpenVideoInfo *ovi)
 			break;
 		}
 		
-        //printf( "avcodec_decode_video(0x%x, 0x%x, 0x%x, 0x%x, %d)", m_pVideoCodecContext, pFrame, &frameDecoded, packet.data, packet.size );
+        int result = avcodec_send_packet(pVideoCodecContext, &packet);
+        if (result < 0 && result != AVERROR(EAGAIN) && result != AVERROR_EOF) {
+            g_Log->Warning( "Failed to send packet to decoder" );
+            break;
+        }
 
-#if (!defined(LINUX_GNU) || defined(HAVE_AVC_VID2))
-        int32 bytesDecoded = avcodec_decode_video2( pVideoCodecContext, pFrame, &frameDecoded, &packet );
-#else
-        int32 bytesDecoded = avcodec_decode_video( pVideoCodecContext, pFrame, &frameDecoded, packet.data, packet.size );
-#endif
-                        
-		//g_Log->Info( "avcodec_decode_video decoded %d bytes", bytesDecoded );
-        if ( bytesDecoded < 0 )
-		{
-            g_Log->Warning( "Failed to decode video frame: bytesDecoded < 0" );
+        int bytesDecoded = avcodec_receive_frame(pVideoCodecContext, pFrame);
+        if (bytesDecoded >= 0) {
+            frameDecoded = 1;
+        } else if (bytesDecoded == AVERROR(EAGAIN) || bytesDecoded == AVERROR_EOF) {
+            // Need more data or reached end of stream, do not treat as a hard error
+        } else {
+            g_Log->Warning( "Failed to decode video frame" );
 			break;
 		}
 
@@ -565,7 +558,7 @@ CVideoFrame *CContentDecoder::ReadOneFrame(sOpenVideoInfo *ovi)
             break;
         }
         
-		av_free_packet(&packet);
+		av_packet_unref(&packet);
     }
 
     //	Do we have a fresh frame?
@@ -595,7 +588,7 @@ CVideoFrame *CContentDecoder::ReadOneFrame(sOpenVideoInfo *ovi)
             g_Log->Info( "creating m_pScaler" );
 
             m_pScaler = sws_getContext(	pVideoCodecContext->width, pVideoCodecContext->height, pVideoCodecContext->pix_fmt,
-                                            pVideoCodecContext->width, pVideoCodecContext->height, m_WantedPixelFormat, SWS_BICUBIC, NULL, NULL, NULL );
+                                            pVideoCodecContext->width, pVideoCodecContext->height, m_WantedAVPixelFormat, SWS_BICUBIC, NULL, NULL, NULL );
 
             //	Store width & height now...
             m_ScalerWidth = static_cast<uint32>(pVideoCodecContext->width);
@@ -606,16 +599,14 @@ CVideoFrame *CContentDecoder::ReadOneFrame(sOpenVideoInfo *ovi)
         }
 
         //printf( "creating pVideoFrame" );
-        pVideoFrame = new CVideoFrame( pVideoCodecContext, m_WantedPixelFormat, std::string(pFormatContext->filename) );
+        pVideoFrame = new CVideoFrame( pVideoCodecContext, m_WantedAVPixelFormat, std::string(pFormatContext->url) );
         AVFrame	*pDest = pVideoFrame->Frame();
 
         //printf( "calling sws_scale()" );
         sws_scale( m_pScaler, pFrame->data, pFrame->linesize, 0, pVideoCodecContext->height, pDest->data, pDest->linesize );
         
-#ifdef USE_NEW_FFMPEG_ALLOC_API
-        if ( pVideoCodecContext->refcounted_frames )
-            av_frame_unref( pFrame );
-#endif
+
+        av_frame_unref(pFrame);
         
 		ovi->m_iCurrentFileFrameCount++;
 
@@ -657,7 +648,7 @@ CVideoFrame *CContentDecoder::ReadOneFrame(sOpenVideoInfo *ovi)
         ovi->m_NextIsSeam = false;
     }
 
-    av_free_packet( &packet );
+    av_packet_unref( &packet );
     return pVideoFrame;
 }
 

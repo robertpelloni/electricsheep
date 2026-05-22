@@ -1,10 +1,10 @@
 #include <assert.h>
 #include <inttypes.h>
 #include <string.h>
-#ifndef LINUX_GNU
+#ifdef LINUX_GNU
 #include "GLee.h"
 #else
-#include <GLee.h>
+#include "GLee.h"
 #endif
 #ifdef MAC
 #include <OpenGL/CGLMacro.h>
@@ -121,7 +121,7 @@ CTextureFlatGL::CTextureFlatGL( const uint32 _flags ) : CTextureFlat( _flags )
 	cgl_ctx = glCtx;//CGLGetCurrentContext();
 
 	if ( _flags & kRectTexture )
-		m_TexTarget = GL_TEXTURE_RECTANGLE_EXT;
+		m_TexTarget = GL_TEXTURE_RECTANGLE_ARB;
 #endif
 	
 	glGenTextures( (GLsizei)1, &m_TexID );
@@ -210,8 +210,8 @@ bool	CTextureFlatGL::Upload( spCImage _spImage )
 			glGetIntegerv(GL_TEXTURE_STORAGE_HINT_APPLE, &save5);
 #endif
 			
-#ifndef LINUX_GNU
-			if( GLEE_ARB_texture_non_power_of_two || m_TexTarget == GL_TEXTURE_RECTANGLE_EXT )
+#ifdef LINUX_GNU
+			if( GLEE_ARB_texture_non_power_of_two || m_TexTarget == GL_TEXTURE_RECTANGLE_ARB )
 #else
 			if( GLEE_ARB_texture_non_power_of_two || m_TexTarget == GL_TEXTURE_RECTANGLE_ARB )
 
@@ -236,8 +236,8 @@ bool	CTextureFlatGL::Upload( spCImage _spImage )
 			
 				if ( mipMapLevel == 0 )
 				{
-#ifndef LINUX_GNU
-					if ( m_TexTarget == GL_TEXTURE_RECTANGLE_EXT )
+#ifdef LINUX_GNU
+					if ( m_TexTarget == GL_TEXTURE_RECTANGLE_ARB )
 #else 
 					if ( m_TexTarget == GL_TEXTURE_RECTANGLE_ARB )
 #endif
@@ -253,8 +253,8 @@ bool	CTextureFlatGL::Upload( spCImage _spImage )
 			
 				if (mipMapLevel == 0)
 				{
-#ifndef LINUX_GNU
-					if ( m_TexTarget == GL_TEXTURE_RECTANGLE_EXT )
+#ifdef LINUX_GNU
+					if ( m_TexTarget == GL_TEXTURE_RECTANGLE_ARB )
 #else 
 					if ( m_TexTarget == GL_TEXTURE_RECTANGLE_ARB )
 #endif

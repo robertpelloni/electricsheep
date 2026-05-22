@@ -1,9 +1,9 @@
 #include	<stdint.h>
 #include	<string.h>
-#ifndef LINUX_GNU
+#ifdef LINUX_GNU
 #include	"./OpenGL/GLee.h"
 #else
-#include <GLee.h>
+#include "GLee.h"
 #endif
 #ifdef MAC
 #include	<OpenGL/CGLMacro.h>
@@ -318,8 +318,8 @@ spCTextureFlat	CRendererGL::NewTextureFlat( const uint32 _flags )
 */
 eTextureTargetType	CRendererGL::GetTextureTargetType( void )
 {
-#ifndef LINUX_GNU
-	if (GL_EXT_texture_rectangle)
+#ifdef LINUX_GNU
+	if (GL_ARB_texture_rectangle)
 #else
 	if (GL_ARB_texture_rectangle)
 #endif

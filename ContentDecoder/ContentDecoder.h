@@ -99,6 +99,7 @@ struct sOpenVideoInfo
 		if( m_pVideoCodecContext )
 		{
 			avcodec_close( m_pVideoCodecContext );
+			avcodec_free_context( &m_pVideoCodecContext );
 			m_pVideoCodecContext = NULL;
 		}
 
@@ -145,7 +146,7 @@ struct sOpenVideoInfo
 	AVFrame			*m_pFrame;
 	AVFormatContext	*m_pFormatContext;
 	AVCodecContext	*m_pVideoCodecContext;
-	AVCodec			*m_pVideoCodec;
+	const AVCodec			*m_pVideoCodec;
 	AVStream		*m_pVideoStream;
 	int32			m_VideoStreamID;
 	uint32			m_totalFrameCount;
@@ -196,7 +197,7 @@ class CContentDecoder
 	
 	sOpenVideoInfo		*m_SecondVideoInfo;
 	
-	PixelFormat		m_WantedPixelFormat;
+	AVPixelFormat		m_WantedAVPixelFormat;
 
 
 	spCPlaylist		m_spPlaylist;
@@ -230,7 +231,7 @@ class CContentDecoder
 	static int DumpError( int _err );
 
 	public:
-			CContentDecoder( spCPlaylist _spPlaylist, bool _bStartByRandom, bool _bAllowTransitions, const uint32 _queueLenght, PixelFormat _wantedPixelFormat = PIX_FMT_RGB24 );
+			CContentDecoder( spCPlaylist _spPlaylist, bool _bStartByRandom, bool _bAllowTransitions, const uint32 _queueLenght, AVPixelFormat _wantedAVPixelFormat = AV_PIX_FMT_RGB24 );
 			virtual ~CContentDecoder();
 
 			bool	Initialized() { return m_Initialized; }
