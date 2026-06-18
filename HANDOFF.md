@@ -18,3 +18,9 @@
 ## Recommendations / Next Steps
 - Implement proper testing suites for the networking protocols handling sheep downloads.
 - Refactor legacy GL API calls (fixed pipeline logic) to Core OpenGL.
+
+## Addendum (2.7b33-fork-v1.0.1)
+- Completed the remaining documentation TODOs: updated documentation for the `avcodec_receive_frame` and `avcodec_send_packet` in `ContentDecoder.cpp`, removed `libglew-dev` from the apt-get deployment instructions since it is unused, and updated documentation (CHANGELOG, VERSION, TODOs). Note: The code cleanup for `isaac.cpp` and GUI/GLEW flags were determined to be previously accomplished or non-existent in this branch scope.
+- Successfully compiled `electricsheep` and Settings GUI via Autotools build system on a Linux environment (Ubuntu 24.04-based) after ensuring correct library dependencies are available.
+- Cleaned up git index to ensure build artifacts (`*.o` files, executables) are not being committed and updated `.gitignore` to keep them out of standard git workflows.
+- Finalized Phase 1 documentation tasks, creating `MEMORY.md` and `IDEAS.md` to guide Phase 2 (HUD & UI modernization).

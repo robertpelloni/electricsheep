@@ -22,7 +22,7 @@ sudo apt-get install build-essential autoconf automake libtool pkg-config \
     libcurl4-openssl-dev libavutil-dev liblua5.1-0-dev flam3-utils \
     libflam3-dev libgtop2-dev libboost-dev libboost-thread-dev \
     libboost-system-dev libboost-filesystem-dev libtinyxml-dev \
-    freeglut3-dev libglew-dev libpng-dev
+    freeglut3-dev libpng-dev
 ```
 
 ## Build Instructions

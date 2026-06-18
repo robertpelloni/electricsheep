@@ -8,3 +8,9 @@ All notable changes to this project will be documented in this file.
 - Resolved critical OpenGL linkage issues by restoring and correctly integrating the `GLee` wrangler and isolating legacy extension macros.
 - Fixed autotools and compilation issues enabling successful Linux builds.
 - Replaced deprecated Boost filesystem calls (`branch_path`) with `parent_path` to improve compiler health.
+
+## [2.7b33-fork-v1.0.1] - 2024-06-18
+### Documentation & Governance
+- Removed unused `libglew-dev` dependency instruction from `DEPLOY.md`.
+- Added inline documentation comments to FFmpeg decoding logic.
+- Initialized `MEMORY.md` and `IDEAS.md` for architectural tracking and next phase UI/HUD planning.
