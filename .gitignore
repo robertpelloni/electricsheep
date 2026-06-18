@@ -22,3 +22,7 @@ missing
 MSVC/SettingsGUI/.deps
 MSVC/SettingsGui/Makefile
 MSVC/SettingsGUI/Makefile.in
+
+# Executables
+Client/electricsheep
+MSVC/SettingsGUI/electricsheep-preferences
