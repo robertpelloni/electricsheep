@@ -22,6 +22,5 @@
   4. Ensure input events (mouse/keyboard) collected in `DisplayGL::GetEvent()` are forwarded to `ImGui_ImplX11` or `ImGui_ImplWin32` input handlers.
 
 ### Phase 3 Networking Modernization Scoping
-- The current implementation of `Networking/Networking.cpp` relies heavily on `curl_easy_init` and `curl_easy_perform`, which block thread execution synchronously until the fetch finishes or times out.
-- For high-bandwidth environments, this behavior halts the overarching logic, meaning parsing UI inputs or transitioning to the next frame may stutter.
-- **Path Forward**: Replace `curl_easy` logic with `curl_multi_init` inside `Networking/Networking.cpp` to queue multiple file transfers asynchronously, or wrap the current `libcurl` implementation tightly inside `Boost.Asio` `async_read` coroutines to decouple download fetching from the main process thread.
+- **Clarification**: I researched `Networking/Networking.cpp` and determined that `CCurlTransfer::Perform` already utilizes `curl_multi_perform` inside an `InterruptiblePerform()` loop wrapper.
+- **Path Forward**: Given that curl operations are already wrapped in `curl_multi_fdset` selects, the networking stack's core bottleneck may actually be inside `ContentDownloader/SheepDownloader.cpp` and `SheepGenerator.cpp` where massive multi-megabyte XML/AVI payloads block via threading sleeps (`boost::thread::sleep`) when `curl_multi` fails. The architecture should be shifted from custom threaded wait states to native `Boost.Asio` or purely event-driven libcurl multi-handles globally.

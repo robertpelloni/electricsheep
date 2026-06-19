@@ -41,3 +41,6 @@
 
 ## Addendum (2.7b33-fork-v1.0.5)
 - Documented Phase 3 networking scoping inside `TODO.md`. Synchronous libcurl fetches have been mapped out to transition to `curl_multi_perform` to resolve threading/rendering frame blocks.
+
+## Addendum (2.7b33-fork-v1.0.6)
+- Evaluated `Networking/Networking.cpp` to discover that `curl_multi_perform` is already being utilized within an interruptible loop. Updated Phase 3 scope to pivot towards investigating blocking issues inside `ContentDownloader/` (like aggressive `boost::thread::sleep` usage) to satisfy the "Async Networking" roadmap requirement.

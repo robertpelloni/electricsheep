@@ -17,4 +17,4 @@
 ~~8. **ImGui Prototyping (Research)**: Scope out a potential `Dear ImGui` rendering integration inside `DisplayOutput/RendererGL.cpp` to replace external settings configurations natively.~~ (Completed)
 
 ## Network Modernization Phase 3 Tasks
-9. **Async Networking (Boost.Asio / curl_multi)**: Re-write `Networking/Networking.cpp` to remove synchronous `curl_easy_perform` logic. Transition `CCurlTransfer::Perform` to rely entirely on `curl_multi_perform` and non-blocking fd pooling to eliminate frame stutter during high-bandwidth fetches.
+9. **Async Networking (Boost.Asio)**: Refactor `ContentDownloader/SheepDownloader.cpp` and `SheepGenerator.cpp` to remove aggressive thread halting (`boost::thread::sleep`) when `curl_multi_perform` encounters failure states. Transition to an event-driven `Boost.Asio` architecture to prevent global render stutter.

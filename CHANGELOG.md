@@ -30,3 +30,6 @@ All notable changes to this project will be documented in this file.
 ## [2.7b33-fork-v1.0.5] - 2024-06-18
 ### Documentation
 - Researched Networking modernization logic mapping the synchronous `CCurlTransfer::Perform()` routine in `Networking/Networking.cpp`. Staged `TODO.md` for migrating to asynchronous multi-handlers.
+## [2.7b33-fork-v1.0.6] - 2024-06-18
+### Documentation
+- Modified Phase 3 scoping in `IDEAS.md` and `TODO.md` based on an investigation into `Networking.cpp`, which proved that `curl_multi_perform` is already in use. Adjusted target for async network modernization to `SheepDownloader.cpp` wait-state threading blocks instead.
