@@ -35,3 +35,6 @@
 
 ## Addendum (2.7b33-fork-v1.0.3)
 - Concluded Phase 2 initial scoping tasks by documenting the specific implementation requirements for embedding `Dear ImGui` directly into the `DisplayOutput/RendererGL` execution loop.
+
+## Addendum (2.7b33-fork-v1.0.4)
+- Documented Phase 3 networking scoping inside `IDEAS.md`. Synchronous libcurl fetches have been identified as blocking rendering threads; the modernization track will involve transitioning to `Boost.Asio` or `curl_multi_init`.

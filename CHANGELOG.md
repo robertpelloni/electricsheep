@@ -22,3 +22,7 @@ All notable changes to this project will be documented in this file.
 ## [2.7b33-fork-v1.0.3] - 2024-06-18
 ### Documentation
 - Researched and appended Dear ImGui integration roadmap inside `IDEAS.md` for native renderer settings replacement.
+
+## [2.7b33-fork-v1.0.4] - 2024-06-18
+### Documentation
+- Concluded Phase 2 and initiated Phase 3 (Network Modernization) by documenting the synchronous `libcurl` bottlenecks (`curl_easy`) in `IDEAS.md` and outlining the asynchronous `curl_multi` integration path.

@@ -20,3 +20,8 @@
   2. In `RendererGL::Initialize()`, append `ImGui::CreateContext()` and `ImGui_ImplOpenGL2_Init()`.
   3. Inside the `RendererGL::EndFrame()` or the main loop's render sequence (before buffer swapping), inject `ImGui_ImplOpenGL2_NewFrame()`, `ImGui::NewFrame()`, and the ImGui render data generation.
   4. Ensure input events (mouse/keyboard) collected in `DisplayGL::GetEvent()` are forwarded to `ImGui_ImplX11` or `ImGui_ImplWin32` input handlers.
+
+### Phase 3 Networking Modernization Scoping
+- The current implementation of `Networking/Networking.cpp` relies heavily on `curl_easy_init` and `curl_easy_perform`, which block thread execution synchronously until the fetch finishes or times out.
+- For high-bandwidth environments, this behavior halts the overarching logic, meaning parsing UI inputs or transitioning to the next frame may stutter.
+- **Path Forward**: Replace `curl_easy` logic with `curl_multi_init` inside `Networking/Networking.cpp` to queue multiple file transfers asynchronously, or wrap the current `libcurl` implementation tightly inside `Boost.Asio` `async_read` coroutines to decouple download fetching from the main process thread.
