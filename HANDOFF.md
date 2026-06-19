@@ -32,3 +32,6 @@
 ## Addendum 3
 - Added `m_FrameIdx` and `m_MaxFrameIdx` to the `Client/client.h` OSD readout for Phase 2 HUD implementation.
 - Fixed the previous unverified documentation issues to reflect the exact state of the HUD Phase 2 integration.
+
+## Addendum (2.7b33-fork-v1.0.3)
+- Concluded Phase 2 initial scoping tasks by documenting the specific implementation requirements for embedding `Dear ImGui` directly into the `DisplayOutput/RendererGL` execution loop.

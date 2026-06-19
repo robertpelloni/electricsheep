@@ -18,3 +18,7 @@ All notable changes to this project will be documented in this file.
 ## [2.7b33-fork-v1.0.2] - 2024-06-18
 ### Added
 - Implemented HUD metric data linkage, indexing current frame and total frame metrics directly to `Client/client.h` for Phase 2 OSD.
+
+## [2.7b33-fork-v1.0.3] - 2024-06-18
+### Documentation
+- Researched and appended Dear ImGui integration roadmap inside `IDEAS.md` for native renderer settings replacement.

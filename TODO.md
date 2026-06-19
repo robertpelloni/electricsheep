@@ -14,4 +14,4 @@
 
 ## HUD & GUI Phase 2 Tasks
 ~~7. **HUD Data Linkage**: Update `Client/client.h` to pull frame data values from the core decoder struct to render metrics visually via the OSD logic.~~ (Completed)
-8. **ImGui Prototyping (Research)**: Scope out a potential `Dear ImGui` rendering integration inside `DisplayOutput/RendererGL.cpp` to replace external settings configurations natively.
+~~8. **ImGui Prototyping (Research)**: Scope out a potential `Dear ImGui` rendering integration inside `DisplayOutput/RendererGL.cpp` to replace external settings configurations natively.~~ (Completed)
