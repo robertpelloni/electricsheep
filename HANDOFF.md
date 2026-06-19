@@ -38,3 +38,6 @@
 
 ## Addendum (2.7b33-fork-v1.0.4)
 - Documented Phase 3 networking scoping inside `IDEAS.md`. Synchronous libcurl fetches have been identified as blocking rendering threads; the modernization track will involve transitioning to `Boost.Asio` or `curl_multi_init`.
+
+## Addendum (2.7b33-fork-v1.0.5)
+- Documented Phase 3 networking scoping inside `TODO.md`. Synchronous libcurl fetches have been mapped out to transition to `curl_multi_perform` to resolve threading/rendering frame blocks.
