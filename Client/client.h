@@ -760,8 +760,12 @@ class	CElectricSheep
                         ContentDecoder::sMetaData metaData;
                         memset(&metaData, 0, sizeof(ContentDecoder::sMetaData));
 
-                        if (!g_Player().Decoder().IsNull() && !g_Player().Decoder()->Frame().IsNull()) {
-                            g_Player().Decoder()->Frame()->GetMetaData(metaData);
+                        ContentDecoder::spCContentDecoder spDecoder = g_Player().Decoder();
+                        if (!spDecoder.IsNull()) {
+                            ContentDecoder::spCVideoFrame spFrame = spDecoder->Frame();
+                            if (!spFrame.IsNull()) {
+                                spFrame->GetMetaData(metaData);
+                            }
                         }
 
 						snprintf( strCurID, 256, "#%d.%05d (%s)\n%s\nFrames: %d / %d\n",
