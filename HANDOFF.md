@@ -28,3 +28,7 @@
 ## Addendum (2.7b33-fork-v1.0.2)
 - Added frame data/metrics to the visual HUD mapping directly from `ContentDecoder::sMetaData` variables inside `Client/client.h` for Phase 2 UI updates.
 - Reflected version bump to `CHANGELOG.md` and `VERSION.md`.
+
+## Addendum 3
+- Added `m_FrameIdx` and `m_MaxFrameIdx` to the `Client/client.h` OSD readout for Phase 2 HUD implementation.
+- Fixed the previous unverified documentation issues to reflect the exact state of the HUD Phase 2 integration.
