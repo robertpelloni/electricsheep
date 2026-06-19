@@ -24,3 +24,7 @@
 - Successfully compiled `electricsheep` and Settings GUI via Autotools build system on a Linux environment (Ubuntu 24.04-based) after ensuring correct library dependencies are available.
 - Cleaned up git index to ensure build artifacts (`*.o` files, executables) are not being committed and updated `.gitignore` to keep them out of standard git workflows.
 - Finalized Phase 1 documentation tasks, creating `MEMORY.md` and `IDEAS.md` to guide Phase 2 (HUD & UI modernization).
+
+## Addendum (2.7b33-fork-v1.0.2)
+- Added frame data/metrics to the visual HUD mapping directly from `ContentDecoder::sMetaData` variables inside `Client/client.h` for Phase 2 UI updates.
+- Reflected version bump to `CHANGELOG.md` and `VERSION.md`.

@@ -13,5 +13,5 @@
 ~~6. **Documentation**: Add inline comments to the newly updated FFmpeg decoding steps explaining the transition from the old packet/frame API.~~ (Completed)
 
 ## HUD & GUI Phase 2 Tasks
-7. **HUD Data Linkage**: Update `Client/Hud.cpp` and `Client/Hud.h` to pull frame data, author tags, and frame duration values from the core decoder struct to render metrics visually via the OSD logic.
+~~7. **HUD Data Linkage**: Update `Client/client.h` to pull frame data values from the core decoder struct to render metrics visually via the OSD logic.~~ (Completed)
 8. **ImGui Prototyping (Research)**: Scope out a potential `Dear ImGui` rendering integration inside `DisplayOutput/RendererGL.cpp` to replace external settings configurations natively.

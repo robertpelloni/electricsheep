@@ -14,3 +14,7 @@ All notable changes to this project will be documented in this file.
 - Removed unused `libglew-dev` dependency instruction from `DEPLOY.md`.
 - Added inline documentation comments to FFmpeg decoding logic.
 - Initialized `MEMORY.md` and `IDEAS.md` for architectural tracking and next phase UI/HUD planning.
+
+## [2.7b33-fork-v1.0.2] - 2024-06-18
+### Added
+- Implemented HUD metric data linkage, indexing current frame and total frame metrics directly to `Client/client.h` for Phase 2 OSD.

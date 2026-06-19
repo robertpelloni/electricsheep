@@ -757,11 +757,20 @@ class	CElectricSheep
 						else
 							strcpy(playCntStr, "Playing for the first time");
 						
-						snprintf( strCurID, 256, "#%d.%05d (%s)\n%s\n",
+                        ContentDecoder::sMetaData metaData;
+                        memset(&metaData, 0, sizeof(ContentDecoder::sMetaData));
+
+                        if (!g_Player().Decoder().IsNull() && !g_Player().Decoder()->Frame().IsNull()) {
+                            g_Player().Decoder()->Frame()->GetMetaData(metaData);
+                        }
+
+						snprintf( strCurID, 256, "#%d.%05d (%s)\n%s\nFrames: %d / %d\n",
 							g_Player().GetCurrentPlayingGeneration(),
 							playingID,
 							g_Player().IsCurrentPlayingEdge() ? "edge" : "loop",
-							playCntStr
+							playCntStr,
+                            metaData.m_FrameIdx,
+                            metaData.m_MaxFrameIdx
 							);
 						if (playingID != 0)
 							((Hud::CStringStat *)spStats->Get( "currentid" ))->SetSample( strCurID );
