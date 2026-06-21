@@ -14,8 +14,6 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/Client
     ${CMAKE_SOURCE_DIR}/Networking
     ${CMAKE_SOURCE_DIR}/tinyXml
-    ${CMAKE_SOURCE_DIR}/Dependencies/imgui
-    ${CMAKE_SOURCE_DIR}/Dependencies/imgui/backends
 )
 
 set(SOURCES
@@ -87,7 +85,7 @@ target_compile_options(electricsheep PRIVATE
 )
 
 # Need to handle GLee
-target_link_libraries(electricsheep imgui
+target_link_libraries(electricsheep
     Boost::system Boost::thread Boost::filesystem
     ${GLUT_LIBRARIES}
     ${OPENGL_LIBRARIES}

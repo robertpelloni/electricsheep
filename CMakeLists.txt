@@ -74,5 +74,3 @@ install(FILES Runtime/TrebuchetMS-20.glf Runtime/TrebuchetMS-24.glf DESTINATION 
 install(PROGRAMS electricsheep-saver DESTINATION bin)
 install(FILES menu-entries/electricsheep-saver.desktop DESTINATION share/applications/screensavers RENAME electricsheep.desktop)
 install(PROGRAMS electricsheep-saver-gnome DESTINATION lib/gnome-screensaver RENAME electricsheep-saver)
-
-add_subdirectory(Dependencies)
