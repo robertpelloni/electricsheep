@@ -81,7 +81,7 @@ class	CElectricSheep_Linux : public CElectricSheep
 							return false;
 					}
 				}
-				
+
 				return true;
 			}
 
@@ -136,20 +136,20 @@ class	CElectricSheep_Linux : public CElectricSheep
 									m_HudManager->Add( "splash_pos", m_spSplashNeg, voteDelaySeconds*0.9f );
 								}
 								break;
-								
+
 								//	Repeat current sheep
 							case	DisplayOutput::CKeyEvent::KEY_LEFT:
 								g_Player().ReturnToPrevious();
 								break;
-								
+
 								//  Force Next Sheep
 							case	DisplayOutput::CKeyEvent::KEY_RIGHT:
 								g_Player().SkipToNext();
 								break;
-								
+
 								//	Repeat sheep
-							case	DisplayOutput::CKeyEvent::KEY_F8:		
-								g_Player().RepeatSheep();	
+							case	DisplayOutput::CKeyEvent::KEY_F8:
+								g_Player().RepeatSheep();
 								break;
 
 
@@ -164,11 +164,11 @@ class	CElectricSheep_Linux : public CElectricSheep
 								break;
 							case	DisplayOutput::CKeyEvent::KEY_F3:
 								m_F1F4Timer.Reset();
-								m_HudManager->Toggle( "renderstats" );	
+								m_HudManager->Toggle( "renderstats" );
 								break;
 							case	DisplayOutput::CKeyEvent::KEY_F4:
 								m_F1F4Timer.Reset();
-								m_HudManager->Toggle( "displaystats" );	
+								m_HudManager->Toggle( "displaystats" );
 								break;
 
 						case CKeyEvent::KEY_Esc: spDisplay->Close(); break;
@@ -204,7 +204,7 @@ class	CElectricSheep_Linux : public CElectricSheep
 
 			/* gf: try
 			void AddGLContext( uint32 _glContext )
-			{					
+			{
 				if ( g_Player().Display() == NULL )
 				{
 					m_glContextList.push_back( _glContext );
@@ -214,7 +214,7 @@ class	CElectricSheep_Linux : public CElectricSheep
 					g_Player().AddDisplay( _glContext );
 				}
 				} */
-		
+
 
 
 };
