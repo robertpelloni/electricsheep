@@ -86,6 +86,12 @@ CRendererGL::~CRendererGL()
 */
 bool	CRendererGL::Initialize( spCDisplayOutput _spDisplay )
 {
+	SetCurrentGLContext();
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	ImGui::StyleColorsDark();
+	ImGui_ImplOpenGL2_Init();
 	if( !CRenderer::Initialize( _spDisplay ) )
 		return false;
 
@@ -164,6 +170,11 @@ void	CRendererGL::Defaults()
 */
 bool	CRendererGL::BeginFrame( void )
 {
+	SetCurrentGLContext();
+
+	// Start the Dear ImGui frame
+	ImGui_ImplOpenGL2_NewFrame();
+	ImGui::NewFrame();
 #ifdef MAC
 	CGLContextObj currContext = m_spDisplay->GetContext();
 	
@@ -207,6 +218,11 @@ void CRendererGL::Verify( const char */*_file*/, const int32 /*_line*/ )
 */
 bool	CRendererGL::EndFrame( bool drawn )
 {
+	SetCurrentGLContext();
+
+	// Render ImGui
+	ImGui::Render();
+	ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
 	SetCurrentGLContext();
 	
 	if( !CRenderer::EndFrame( drawn ) )
