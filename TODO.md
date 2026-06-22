@@ -11,4 +11,4 @@
 6. **ImGui Window Configuration**: Build the actual UI windows overlay using the ImGui contexts injected into `RendererGL.cpp` to expose frame metrics and replace the wxWidgets preferences app.
 
 ## Network Modernization Phase 3 Tasks
-7. **Async Networking (Boost.Asio)**: Refactor `ContentDownloader/SheepDownloader.cpp` and `SheepGenerator.cpp` to remove aggressive thread halting (`boost::thread::sleep`) when `curl_multi_perform` encounters failure states. Transition to an event-driven `Boost.Asio` architecture to prevent global render stutter.
+~~7. **Async Networking (Boost.Asio)**: Refactor `ContentDownloader/SheepDownloader.cpp` and `SheepGenerator.cpp` to remove aggressive thread halting (`boost::thread::sleep`) when `curl_multi_perform` encounters failure states. Transition to an event-driven `Boost.Asio` architecture to prevent global render stutter.~~ (Completed)

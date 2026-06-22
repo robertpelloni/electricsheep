@@ -1,22 +1,17 @@
 # Session Handoff Summary
 
 ## Context & State
-* **Current Phase**: Phase 2 UI Overhaul (ImGui Integration) - **COMPLETED**
-* **Next Phase**: Phase 3 Network Modernization (Async Boost / cURL)
+* **Current Phase**: Phase 3 Network Modernization - **COMPLETED**
+* **Next Phase**: Phase 4 UI Integration (ImGui Screen Configurations)
 
 ## What was Accomplished
-* **Repository Hygiene**: Deep-cleaned the repository of legacy autotools artifacts (`configure`, `Makefile.in`, `.deps/`, `.libs/`). Updated `.gitignore` to aggressively track and ignore these alongside the new `build/` directory.
-* **Dear ImGui Integration**: Successfully added the Dear ImGui framework to the project natively without submodule bloat.
-    * Checked out the ImGui repository directly into `Dependencies/imgui`.
-    * Deleted all unneeded files (`examples/`, `docs/`, `misc/`, and unused `backends/`).
-    * Hooked up `imgui_impl_opengl2.cpp` and `imgui_impl_glut.cpp` to the `CMakeLists.txt` build pipeline.
-* **Rendering Injection**: Successfully injected the ImGui context initialization (`ImGui::CreateContext`, `ImGui_ImplOpenGL2_Init`) into `CRendererGL::Initialize()` and the render loops into `CRendererGL::BeginFrame()` / `CRendererGL::EndFrame()` without polluting the global `client.h` and causing include collisions.
-* **Build Verification**: Verified that the CMake pipeline (`cmake -B build && cmake --build build -j4`) successfully links both the wxWidgets `electricsheep-preferences` executable and the new ImGui-enabled `electricsheep` client simultaneously.
+* **Asynchronous Networking Updates**: Investigated the network stuttering caused by the `while(1)` polling loops in `ContentDownloader/SheepDownloader.cpp` and `ContentDownloader/SheepGenerator.cpp`.
+* Discovered that the threads relied on blocking `boost::thread::sleep` loops that completely locked out abort signals or yield state updates during long timeouts (up to several minutes).
+* Refactored these hard sleeps into non-blocking, interruptible `InterruptibleSleep(int seconds)` routines utilizing `boost::condition_variable` timed waits.
+* Addressed concurrency safety by attaching a lambda predicate `[this](){ return m_bAborted; }` to the `timed_wait` calls. This ensures no lost wakeups occur if `Abort()` fires a `notify_all()` right before the sleep engages, providing perfectly safe and instantaneous thread teardown.
 
 ## Known Issues / Gotchas
-* Do **NOT** inject ImGui headers directly into `Client/client.h` or `Client/client_linux.h`. Doing so causes severe include-chain compilation failures because the legacy codebase has tangled dependencies between `#include "client.h"` and platform-specific headers. Always isolate ImGui logic inside the implementation files (e.g., `RendererGL.cpp`).
-* The system relies heavily on `freeglut` for window context generation.
-* There is a known bug in `ContentDownloader/SheepDownloader.cpp` and `SheepGenerator.cpp` where `boost::thread::sleep` is used synchronously to block the download polling loops on failure. This causes frame stutters.
+* The Phase 2 ImGui overlay was successfully wired into the OpenGL render context (`RendererGL.cpp`), but the actual UI window elements (e.g., `ImGui::Begin("Settings")`) have not been constructed yet.
 
 ## Next Steps for Successor Model
-1. **Network Modernization (High Priority)**: Dive into `ContentDownloader/SheepDownloader.cpp` and `ContentDownloader/SheepGenerator.cpp`. Identify the `while(1)` loops and `boost::thread::sleep` calls. Refactor these to use asynchronous `Boost.Asio` timers or condition variables to decouple the network polling from blocking the active client execution threads.
+1. **ImGui Window Configuration**: Build the actual UI windows overlay using the ImGui contexts injected into `RendererGL.cpp` to expose frame metrics and replace the wxWidgets preferences app.
