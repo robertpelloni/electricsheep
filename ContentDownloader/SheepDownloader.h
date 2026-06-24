@@ -62,8 +62,6 @@ class SheepDownloader
 	Network::spCFileDownloader m_spSheepDownloader;
 	
 	boost::mutex m_AbortMutex;
-	boost::condition_variable m_AbortCondition;
-	void InterruptibleSleep(int seconds);
 	
 	protected:
 

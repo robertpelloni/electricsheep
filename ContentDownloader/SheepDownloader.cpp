@@ -166,7 +166,6 @@ void SheepDownloader::Abort( void )
 	boost::mutex::scoped_lock lockthis( m_AbortMutex );
 
 	m_bAborted = true;
-		m_AbortCondition.notify_all();
 }
 
 //	Downloads the given sheep from the server and supplies a unique name for it based on it's ids.
@@ -757,15 +756,6 @@ bool SheepDownloader::isFolderAccessible( const char *folder )
 	findSheepToDownload().
 	This method loads all of the sheep that are cached on disk and deletes any files in the cache that no longer exist on the server
 */
-
-
-void SheepDownloader::InterruptibleSleep(int seconds)
-{
-	boost::mutex::scoped_lock lock(m_AbortMutex);
-	m_AbortCondition.timed_wait(lock, boost::posix_time::seconds(seconds), [this](){ return m_bAborted; });
-}
-
-
 void	SheepDownloader::findSheepToDownload()
 {
 	int best_rating;
@@ -790,7 +780,7 @@ void	SheepDownloader::findSheepToDownload()
 			//	Make sure we are really deeply settled asleep, avoids lots of timed out frames.
 			g_Log->Info( "Chilling for %d seconds before trying to download sheeps...", ContentDownloader::INIT_DELAY );
 
-			InterruptibleSleep(ContentDownloader::INIT_DELAY);
+			thread::sleep( get_system_time() + posix_time::seconds(ContentDownloader::INIT_DELAY) );
 		}
 #endif
 
@@ -830,14 +820,14 @@ void	SheepDownloader::findSheepToDownload()
 					const char *err = "Content folder is not working.  Downloading disabled.\n";
 					Shepherd::addMessageText( err, strlen(err), 180 ); //3 minutes
 
-					InterruptibleSleep(TIMEOUT);
+					thread::sleep( get_system_time() + posix_time::seconds(TIMEOUT) );
 				}
 				else
 				{
 					const char *err = "Low disk space.  Downloading disabled.\n";
 					Shepherd::addMessageText( err, strlen(err), 180 ); //3 minutes
 
-					InterruptibleSleep(TIMEOUT);
+					thread::sleep( get_system_time() + posix_time::seconds(TIMEOUT) );
 
 					boost::mutex::scoped_lock lockthis( s_DownloaderMutex );
 
@@ -986,7 +976,7 @@ void	SheepDownloader::findSheepToDownload()
 					badSheepSleepDuration = 10;
 				}
 
-				InterruptibleSleep(failureSleepDuration);
+				thread::sleep( get_system_time() + posix_time::seconds(failureSleepDuration) );
 
 				//failureSleepDuration = TIMEOUT;
 

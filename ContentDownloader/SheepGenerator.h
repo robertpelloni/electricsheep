@@ -55,10 +55,6 @@ class SheepGenerator
 
 	char            *fTempFile;
 	bool			fHasMessage;
-	bool m_bAborted;
-	boost::mutex m_AbortMutex;
-	boost::condition_variable m_AbortCondition;
-	void InterruptibleSleep(int seconds);
 	uint32				fGeneratorId;
 	int32			m_DelayAfterRenderSec;
 

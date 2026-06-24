@@ -457,7 +457,7 @@ bool	SheepGenerator::generateSheep()
 		//	Make sure we are really deeply settled asleep, avoids lots of timed out frames.
 		g_Log->Info( "Chilling for %d seconds before trying to render frames...", ContentDownloader::INIT_DELAY );
 		
-		InterruptibleSleep(ContentDownloader::INIT_DELAY);
+		thread::sleep( get_system_time() + posix_time::seconds(ContentDownloader::INIT_DELAY) );
 #endif
 
 		uint32	failureSleepDuration = TIMEOUT;
@@ -537,7 +537,7 @@ bool	SheepGenerator::generateSheep()
 									fclose( f );
 								}
 								
-								InterruptibleSleep(m_DelayAfterRenderSec);
+								thread::sleep( get_system_time() + posix_time::seconds(m_DelayAfterRenderSec) );
 
 								uploader->setSheepFile( jpf );
 								if( uploader->uploadSheep() )
@@ -601,7 +601,7 @@ bool	SheepGenerator::generateSheep()
 					tmp << "Rendering restarting in {" << std::fixed << std::setprecision(0) << (sleeptime + noWorkSleepDuration) << "}...";
 					Shepherd::setRenderState(tmp.str());
 
-					InterruptibleSleep(sleeptime + noWorkSleepDuration);
+					thread::sleep( get_system_time() + posix_time::seconds(sleeptime + noWorkSleepDuration) );
 				}
 				else
 				{
@@ -615,7 +615,7 @@ bool	SheepGenerator::generateSheep()
 				{
 					g_Log->Warning( "Rendering not allowed... chilling for %d seconds...", failureSleepDuration );
 
-					InterruptibleSleep(failureSleepDuration);
+					thread::sleep( get_system_time() + posix_time::seconds(failureSleepDuration) );
 
 					std::stringstream tmp;
 					tmp << "Rendering restarting in {" << std::fixed << std::setprecision(0) << failureSleepDuration << "}...";
@@ -627,7 +627,7 @@ bool	SheepGenerator::generateSheep()
 				{
 					g_Log->Warning( "Unable to get control points from server... chilling for %d seconds...", failureSleepDuration );
 
-					InterruptibleSleep(failureSleepDuration);
+					thread::sleep( get_system_time() + posix_time::seconds(failureSleepDuration) );
 
 					std::stringstream tmp;
 					tmp << "Rendering restarting in {" << std::fixed << std::setprecision(0) << failureSleepDuration << "}...";
@@ -650,15 +650,6 @@ bool	SheepGenerator::generateSheep()
 	shepherdCallback().
 	This method is the entry point for the shepherd. The method will create new frames and get than indicate to the uploader to begin uploading them
 */
-
-
-void SheepGenerator::InterruptibleSleep(int seconds)
-{
-	boost::mutex::scoped_lock lock(m_AbortMutex);
-	m_AbortCondition.timed_wait(lock, boost::posix_time::seconds(seconds), [this](){ return m_bAborted; });
-}
-
-
 void SheepGenerator::shepherdCallback( void* data )
 {
 	((SheepGenerator *)data)->generateSheep();
