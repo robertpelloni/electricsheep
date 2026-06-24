@@ -37,7 +37,7 @@ std::string computeMD5( const std::string& str )
 
 	std::string md5Str;
 
-	for (int i = 0; i < sizeof(digest); i++)
+	for (size_t i = 0; i < sizeof(digest); i++)
 	{
 	  const char *hex_digits = "0123456789ABCDEF";
 
@@ -62,7 +62,7 @@ static std::string generateID()
 #else
 	timeval cur_time;
 	gettimeofday(&cur_time, NULL);
-	
+
 	salt = (unsigned char*)&cur_time;
 #endif
 
@@ -271,7 +271,7 @@ void electricsheepguiMyDialog2::LoadSettings()
 	m_spinRepeatLoops->SetValue(wxString::Format(wxT("%d"), g_Settings()->Get("settings.player.LoopIterations", 2)));
 	m_spinDisplayFps->SetValue(wxString::Format(wxT("%.2lf"), g_Settings()->Get("settings.player.display_fps", 60.)));
 	m_ForceWindowedDX = g_Settings()->Get( "settings.player.force_windowed_directx", true );
-	
+
 	if (g_Settings()->Get( "settings.content.unlimited_cache", false) == true)
 	{
 		m_checkUnlimitedCache->SetValue(true);
@@ -379,7 +379,7 @@ void electricsheepguiMyDialog2::Login()
 
 	std::string nickencoded = Encode( g_Settings()->Get("settings.generator.nickname", std::string("")) );
 	std::string passencoded = Encode( g_Settings()->Get("settings.content.password_md5", std::string("")) );
-	
+
 	if (nickencoded == std::string("") || passencoded == std::string(""))
 	{
 		wxMutexGuiEnter();
@@ -420,7 +420,7 @@ void electricsheepguiMyDialog2::Login()
 
 	long code = 0;
 	m_Response.clear();
-	if (code = curl_easy_perform(pCurl) == CURLE_OK)
+	if ((code = curl_easy_perform(pCurl)) == CURLE_OK)
 	{
 		if (curl_easy_getinfo(pCurl, CURLINFO_RESPONSE_CODE, &code) == CURLE_OK)
 		{
@@ -978,4 +978,3 @@ void electricsheepguiMyDialog2::OnLoginInfoUpdate( LoginInfoUpdateEvent &event )
     m_staticText25->SetLabel( event.getText() );
     Layout();
 }
-

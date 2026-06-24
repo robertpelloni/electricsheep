@@ -758,7 +758,7 @@ class	CElectricSheep
 							strcpy(playCntStr, "Playing for the first time");
 						
                         ContentDecoder::sMetaData metaData;
-                        memset(&metaData, 0, sizeof(ContentDecoder::sMetaData));
+                        metaData = ContentDecoder::sMetaData();
 
                         ContentDecoder::spCContentDecoder spDecoder = g_Player().Decoder();
                         if (!spDecoder.IsNull()) {
