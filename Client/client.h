@@ -965,7 +965,7 @@ class	CElectricSheep
 						}
 
 						//	Finally render hud.
-						m_HudManager->Render( g_Player().Renderer() );
+						// m_HudManager->Render( g_Player().Renderer() ); // Deprecated in favor of ImGui
 						
 						//	Update display events.
 						g_Player().Display()->Update();

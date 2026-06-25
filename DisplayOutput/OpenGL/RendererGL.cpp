@@ -224,16 +224,23 @@ bool	CRendererGL::EndFrame( bool drawn )
 
 	// Render ImGui
 
+
 	// ImGui Overlay
 	ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowBgAlpha(0.35f); // Transparent background
-	if (ImGui::Begin("ElectricSheep Overlay", NULL, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav))
+	if (ImGui::Begin("ElectricSheep HUD", NULL, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav))
 	{
-		ImGui::Text("ElectricSheep V3");
+		ImGui::Text("ElectricSheep V3 (Phase 4 UI)");
 		ImGui::Separator();
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+
+        // We can expose the global config settings here later
+        if (ImGui::Button("Preferences")) {
+            // Open preferences
+        }
 	}
 	ImGui::End();
+
 
 
 	// ImGui Overlay
