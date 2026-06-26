@@ -3,7 +3,7 @@
 ## Prerequisites
 The project requires the following libraries to build:
 - GCC / G++ (C++03 / C++98 support)
-- Autotools (`autoconf`, `automake`, `libtool`)
+- CMake (`cmake`, `make`)
 - Boost (`system`, `thread`, `filesystem`)
 - FFmpeg (`libavcodec`, `libavformat`, `libswscale`, `libavutil`)
 - OpenGL (`libgl1-mesa-dev`, `freeglut3-dev`)
@@ -26,15 +26,13 @@ sudo apt-get install build-essential autoconf automake libtool pkg-config \
 ```
 
 ## Build Instructions
-1. Generate the configure script:
-   `./autogen.sh`
-2. Configure the build environment:
-   `./configure`
-3. Compile the project:
-   `make`
+1. Configure the build environment:
+   `cmake -B build`
+2. Compile the project:
+   `cmake --build build -j4`
 
 ## Running
 After a successful build, the binary will be located in the `Client/` directory:
-`./Client/electricsheep`
+`./build/Client/electricsheep`
 
 *Note: Environment variables for API keys/secrets should be defined in a `.env` file (if applicable) and are not to be committed.*
