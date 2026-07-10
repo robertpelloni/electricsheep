@@ -86,6 +86,14 @@ CRendererGL::~CRendererGL()
 */
 bool	CRendererGL::Initialize( spCDisplayOutput _spDisplay )
 {
+	SetCurrentGLContext();
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	ImGui::StyleColorsDark();
+	ImGui_ImplOpenGL2_Init();
+	ImGui_ImplGLUT_Init();
+	ImGui_ImplGLUT_InstallFuncs();
 	if( !CRenderer::Initialize( _spDisplay ) )
 		return false;
 
@@ -164,6 +172,11 @@ void	CRendererGL::Defaults()
 */
 bool	CRendererGL::BeginFrame( void )
 {
+	SetCurrentGLContext();
+
+	// Start the Dear ImGui frame
+	ImGui_ImplOpenGL2_NewFrame();
+	ImGui::NewFrame();
 #ifdef MAC
 	CGLContextObj currContext = m_spDisplay->GetContext();
 	
@@ -207,6 +220,34 @@ void CRendererGL::Verify( const char */*_file*/, const int32 /*_line*/ )
 */
 bool	CRendererGL::EndFrame( bool drawn )
 {
+	SetCurrentGLContext();
+
+	// Render ImGui
+
+
+	// ImGui Overlay
+	ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowBgAlpha(0.35f); // Transparent background
+	if (ImGui::Begin("ElectricSheep HUD", NULL, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav))
+	{
+		ImGui::Text("ElectricSheep V3 (Phase 4 UI)");
+		ImGui::Separator();
+		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+
+        // We can expose the global config settings here later
+        if (ImGui::Button("Preferences")) {
+            // Open preferences
+        }
+	}
+	ImGui::End();
+
+
+
+	// ImGui Overlay
+
+
+	ImGui::Render();
+	ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
 	SetCurrentGLContext();
 	
 	if( !CRenderer::EndFrame( drawn ) )

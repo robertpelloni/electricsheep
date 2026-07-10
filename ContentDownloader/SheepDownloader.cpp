@@ -130,7 +130,7 @@ void	SheepDownloader::closeDownloader()
 */
 int	SheepDownloader::numberOfDownloadedSheep()
 {
- 	boost::mutex::scoped_lock lockthis( s_DownloaderMutex );
+	boost::mutex::scoped_lock lockthis( s_DownloaderMutex );
 
 	int returnVal;
 	returnVal = fDownloadedSheep;
@@ -213,8 +213,8 @@ bool SheepDownloader::downloadSheep( Sheep *sheep )
     snprintf( filename, MAXBUF, "%s%05d=%05d=%05d=%05d.avi", Shepherd::mpegPath(), sheep->generation(), sheep->id(), sheep->firstId(), sheep->lastId() );
     if( !spDownload->Save( filename ) )
     {
-    	g_Log->Error( "Unable to save %s\n", filename );
-    	return false;
+	g_Log->Error( "Unable to save %s\n", filename );
+	return false;
     }
 
     return true;
@@ -261,7 +261,7 @@ void SheepDownloader::handleListElement(TiXmlElement* listElement)
 			if ((a = pChildNode->Attribute("last")))		newSheep->setLastId(static_cast<uint32>(atoi(a)));
 			if ((a = pChildNode->Attribute("state")))		state = a;
 			if ((a = pChildNode->Attribute("url")))		newSheep->setURL(a);
-			
+
             // TODO: fix malformed state, potential error
 			if (state != NULL)
             {
@@ -409,7 +409,7 @@ void SheepDownloader::listStartElement(void *userData, const char *name, const c
 //	Parse the sheep list and create the server sheep.
 void SheepDownloader::parseSheepList()
 {
- 	boost::mutex::scoped_lock lockthis( s_DownloaderMutex );
+	boost::mutex::scoped_lock lockthis( s_DownloaderMutex );
 
 	char pbuf[MAXBUF];
 
@@ -423,7 +423,7 @@ void SheepDownloader::parseSheepList()
 		TiXmlElement* listElement;
 
 		listElement=hDoc.FirstChild( "list" ).Element();
-		
+
 		//only if there is at least one child in the list, we delete the list from previous request
 		if (listElement && listElement->FirstChildElement() != NULL)
 		{
@@ -439,7 +439,7 @@ void SheepDownloader::parseSheepList()
 
 			handleListElement(listElement);
 		}
-		else 
+		else
 		{
 			g_Log->Error( "There are no sheep in the downloaded list, is that correct?!?\n" );
 			return;
@@ -462,7 +462,7 @@ void SheepDownloader::parseSheepList()
 */
 void	SheepDownloader::updateCachedSheep()
 {
- 	boost::mutex::scoped_lock lockthis( s_DownloaderMutex );
+	boost::mutex::scoped_lock lockthis( s_DownloaderMutex );
 
 	//	Get the client flock.
 	if( Shepherd::getClientFlock( &fClientFlock ) )
@@ -609,16 +609,16 @@ void	SheepDownloader::deleteCached( const uint64 &size, const int getGenerationT
 
 				//	Store the file size.
 				total += curSheep->fileSize();
-				
+
 				if ( oldest_sheep_time == 0 || oldest_sheep_time > curSheep->fileWriteTime() )
 				{
 					oldest = i;
 					oldest_sheep_time = curSheep->fileWriteTime();
 				}
-				
+
 				uint16 curPlayCount = g_PlayCounter().PlayCount(curSheep->generation(), curSheep->id());
-				
-				if( oldest_time == 0 || 
+
+				if( oldest_time == 0 ||
 					( curPlayCount > highest_playcount) ||
 					( (curPlayCount == highest_playcount) && (curSheep->fileWriteTime() < oldest_time) )
 					)
@@ -649,7 +649,7 @@ void	SheepDownloader::deleteCached( const uint64 &size, const int getGenerationT
 				std::stringstream temp;
 				std::string temptime = ctime( &oldest_time );
 				temptime.erase(temptime.size() - 1);
-				
+
 				temp << "Deleted: " << filename << ", played:" << playcount << " time" <<  ((playcount == 1) ? "," : "s,") << temptime;
 				Shepherd::AddOverflowMessage( temp.str() );
 				g_Log->Info("%s", temp.str().c_str());
@@ -772,14 +772,14 @@ void	SheepDownloader::findSheepToDownload()
 		if ( fClientFlock.size() > 3 )
 		{
 			std::stringstream tmp;
-			
+
 			tmp << "Downloading starts in {" << (int32)ContentDownloader::INIT_DELAY << "}...";
-		
+
 			Shepherd::setDownloadState(tmp.str());
-			
+
 			//	Make sure we are really deeply settled asleep, avoids lots of timed out frames.
 			g_Log->Info( "Chilling for %d seconds before trying to download sheeps...", ContentDownloader::INIT_DELAY );
-			
+
 			thread::sleep( get_system_time() + posix_time::seconds(ContentDownloader::INIT_DELAY) );
 		}
 #endif
@@ -828,7 +828,7 @@ void	SheepDownloader::findSheepToDownload()
 					Shepherd::addMessageText( err, strlen(err), 180 ); //3 minutes
 
 					thread::sleep( get_system_time() + posix_time::seconds(TIMEOUT) );
-				
+
 					boost::mutex::scoped_lock lockthis( s_DownloaderMutex );
 
 					deleteCached( 0, 0 );
@@ -849,13 +849,13 @@ void	SheepDownloader::findSheepToDownload()
 				if( getSheepList() )
 				{
 					Shepherd::setDownloadState("Searching for sheep to download...");
-					
+
 					if (fListDirty)
 					{
 						//clearFlocks();
 						parseSheepList();
 					}
-					else 
+					else
 					{
 						fGotList = true;
 					}
@@ -872,7 +872,7 @@ void	SheepDownloader::findSheepToDownload()
 
 						unsigned int i;
 						unsigned int j;
-						
+
 						size_t downloadedcount = 0;
 						for( i=0; i<fServerFlock.size(); i++ )
 						{
@@ -926,7 +926,7 @@ void	SheepDownloader::findSheepToDownload()
 							std::stringstream downloadingsheepstr;
 							downloadingsheepstr << "Downloading sheep " << downloadedcount+1 << "/" << fServerFlock.size() << "...\n";
 							Shepherd::setDownloadState(downloadingsheepstr.str() + fServerFlock[ static_cast<size_t>(best_anim) ]->URL());
-						
+
 							g_Log->Info( "Best sheep to download rating=%d, fServerFlock index=%d, write time=%s", best_rating, best_anim, ctime(&best_ctime) );
 							if( downloadSheep( fServerFlock[ static_cast<size_t>(best_anim) ] ) )
 							{
@@ -944,11 +944,11 @@ void	SheepDownloader::findSheepToDownload()
 					if (best_anim_old == -1)
 					{
 						failureSleepDuration = badSheepSleepDuration;
-							
+
 						badSheepSleepDuration = Base::Math::Clamped( badSheepSleepDuration * 2, TIMEOUT, MAX_TIMEOUT );
 
 						std::stringstream tmp;
-			
+
 						tmp << "All available sheep downloaded, will retry in {" << std::fixed << std::setprecision(0) << failureSleepDuration << "}...";
 
 						Shepherd::setDownloadState(tmp.str());
@@ -957,11 +957,11 @@ void	SheepDownloader::findSheepToDownload()
 					{
 							//	Gradually increase duration betwee 10 seconds and TIMEOUT, if the sheep fail to download consecutively
 							failureSleepDuration = badSheepSleepDuration;
-						
+
 							badSheepSleepDuration = Base::Math::Clamped( badSheepSleepDuration * 2, TIMEOUT, MAX_TIMEOUT );
-						
+
 							std::stringstream tmp;
-			
+
 							tmp << "Downloading failed, will retry in {" << std::fixed << std::setprecision(0) << failureSleepDuration << "}...\n" << best_anim_old_url;
 							Shepherd::setDownloadState(tmp.str());
 					}
@@ -972,12 +972,12 @@ void	SheepDownloader::findSheepToDownload()
 				        const char *err = "error connecting to server";
 					Shepherd::addMessageText( err, strlen(err), 180 );	//	3 minutes.
 					failureSleepDuration = TIMEOUT;
-					
+
 					badSheepSleepDuration = 10;
 				}
 
 				thread::sleep( get_system_time() + posix_time::seconds(failureSleepDuration) );
-				
+
 				//failureSleepDuration = TIMEOUT;
 
 			}
@@ -1005,7 +1005,7 @@ bool	SheepDownloader::getSheepList()
 		if( time(0) - stat_buf.st_mtime < MIN_READ_INTERVAL )
 			return true;
 	}
-	
+
 	Shepherd::setDownloadState("Getting sheep list...");
 
     snprintf( filename, MAX_PATH, "%slist.gzip", xmlPath );
@@ -1032,8 +1032,8 @@ bool	SheepDownloader::getSheepList()
 	//	Save the data to file.
     if( !spDownload->Save( filename ) )
     {
-    	g_Log->Error( "Unable to save %s\n", filename );
-    	return false;
+	g_Log->Error( "Unable to save %s\n", filename );
+	return false;
     }
 
 	//	Save file time.

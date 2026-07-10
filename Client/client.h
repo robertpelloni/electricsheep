@@ -757,11 +757,24 @@ class	CElectricSheep
 						else
 							strcpy(playCntStr, "Playing for the first time");
 						
-						snprintf( strCurID, 256, "#%d.%05d (%s)\n%s\n",
+                        ContentDecoder::sMetaData metaData;
+                        metaData = ContentDecoder::sMetaData();
+
+                        ContentDecoder::spCContentDecoder spDecoder = g_Player().Decoder();
+                        if (!spDecoder.IsNull()) {
+                            ContentDecoder::spCVideoFrame spFrame = spDecoder->Frame();
+                            if (!spFrame.IsNull()) {
+                                spFrame->GetMetaData(metaData);
+                            }
+                        }
+
+						snprintf( strCurID, 256, "#%d.%05d (%s)\n%s\nFrames: %d / %d\n",
 							g_Player().GetCurrentPlayingGeneration(),
 							playingID,
 							g_Player().IsCurrentPlayingEdge() ? "edge" : "loop",
-							playCntStr
+							playCntStr,
+                            metaData.m_FrameIdx,
+                            metaData.m_MaxFrameIdx
 							);
 						if (playingID != 0)
 							((Hud::CStringStat *)spStats->Get( "currentid" ))->SetSample( strCurID );
@@ -952,7 +965,7 @@ class	CElectricSheep
 						}
 
 						//	Finally render hud.
-						m_HudManager->Render( g_Player().Renderer() );
+						// m_HudManager->Render( g_Player().Renderer() ); // Deprecated in favor of ImGui
 						
 						//	Update display events.
 						g_Player().Display()->Update();

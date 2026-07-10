@@ -534,12 +534,14 @@ CVideoFrame *CContentDecoder::ReadOneFrame(sOpenVideoInfo *ovi)
 			break;
 		}
 		
+// Modern FFmpeg decoding step: Send the packet to the decoder context
         int result = avcodec_send_packet(pVideoCodecContext, &packet);
         if (result < 0 && result != AVERROR(EAGAIN) && result != AVERROR_EOF) {
             g_Log->Warning( "Failed to send packet to decoder" );
             break;
         }
 
+// Modern FFmpeg decoding step: Receive the decoded frame from the context
         int bytesDecoded = avcodec_receive_frame(pVideoCodecContext, pFrame);
         if (bytesDecoded >= 0) {
             frameDecoded = 1;

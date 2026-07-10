@@ -8,6 +8,9 @@
 #include "TextureFlat.h"
 #include "Image.h"
 #include "FontGL.h"
+#include "imgui.h"
+#include "imgui_impl_opengl2.h"
+#include "imgui_impl_glut.h"
 #ifdef MAC
 #undef Random
 #include <OpenGL/CGLMacro.h>
