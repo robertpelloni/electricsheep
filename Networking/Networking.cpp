@@ -22,11 +22,11 @@ CCurlTransfer::CCurlTransfer( const std::string &_name ) : m_Name( _name ), m_St
 	m_pCurl = curl_easy_init();
 	if( !m_pCurl )
 		g_Log->Info( "Failed to init curl instance." );
-		
+
 	m_pCurlM = curl_multi_init();
 	if( !m_pCurlM )
 		g_Log->Info( "Failed to init curl multi instance." );
-		
+
 	if ( m_pCurl != NULL && m_pCurlM != NULL )
 		curl_multi_add_handle( m_pCurlM, m_pCurl );
 }
@@ -39,7 +39,7 @@ CCurlTransfer::~CCurlTransfer()
 {
 	//g_NetworkManager->Remove( this );
 	g_Log->Info( "~CCurlTransfer()" );
-	
+
 	if ( m_pCurlM != NULL && m_pCurl != NULL )
 		curl_multi_remove_handle(m_pCurlM, m_pCurl);
 
@@ -48,7 +48,7 @@ CCurlTransfer::~CCurlTransfer()
 		curl_easy_cleanup( m_pCurl );
 		m_pCurl = NULL;
 	}
-	
+
 	if ( m_pCurlM != NULL )
 	{
 		curl_multi_cleanup( m_pCurlM );
@@ -99,7 +99,7 @@ int CCurlTransfer::customProgressCallback( void *_pUserData, fp8 _downTotal, fp8
 
 	if (!g_NetworkManager->SingletonActive() || g_NetworkManager->IsAborted())
 		return -1;
-	
+
 	CCurlTransfer *pOut = static_cast<CCurlTransfer *>(_pUserData);
 	if( !pOut )
 	{
@@ -175,22 +175,22 @@ bool	CCurlTransfer::InterruptiblePerform()
 	struct timeval tval;
 
 	_code = curl_multi_perform( m_pCurlM, &running_handles );
-	
+
 	if ( !VerifyM(_code) )
 		return false;
-	
+
 	if ( running_handles == 0 )
 		return true;
 
 	running_handles_last = running_handles;
-	
+
 	while( 1 )
 	{
 		while ( _code == CURLM_CALL_MULTI_PERFORM )
 		{
 			if (!g_NetworkManager->SingletonActive() || g_NetworkManager->IsAborted())
 				return false;
-			
+
 			_code = curl_multi_perform (m_pCurlM, &running_handles );
 		}
 
@@ -205,12 +205,12 @@ bool	CCurlTransfer::InterruptiblePerform()
 		FD_ZERO( &fd_except );
 
 		_code = curl_multi_fdset( m_pCurlM, &fd_read, &fd_write, &fd_except, &max_fd );
-		
+
 		if ( !VerifyM( _code ) )
 			return false;
-			
+
 		timeout = -1;
-		
+
 #ifdef CURL_MULTI_TIMEOUT
 		_code = curl_multi_timeout( m_pCurlM, &timeout );
 
@@ -225,7 +225,7 @@ bool	CCurlTransfer::InterruptiblePerform()
 		tval.tv_usec = timeout % 1000 * 1000;
 
 		int err;
-		
+
 		if (!g_NetworkManager->SingletonActive() || g_NetworkManager->IsAborted())
 			return false;
 
@@ -280,9 +280,12 @@ bool	CCurlTransfer::Perform( const std::string &_url )
 	if( !Verify( curl_easy_setopt( m_pCurl, CURLOPT_PROGRESSFUNCTION, &CCurlTransfer::customProgressCallback ) ) )	return false;
 	if( !Verify( curl_easy_setopt( m_pCurl, CURLOPT_PROGRESSDATA, this ) ) )	return false;
 	if( !Verify( curl_easy_setopt( m_pCurl, CURLOPT_ERRORBUFFER, errorBuffer ) ) )	return false;
-	
+
 	if( !Verify( curl_easy_setopt( m_pCurl, CURLOPT_FOLLOWLOCATION, 1 ) ) )	return false;
 	if( !Verify( curl_easy_setopt( m_pCurl, CURLOPT_MAXREDIRS, 5 ) ) )	return false;
+
+	if( !Verify( curl_easy_setopt( m_pCurl, CURLOPT_TIMEOUT, 30L ) ) ) return false;
+	if( !Verify( curl_easy_setopt( m_pCurl, CURLOPT_CONNECTTIMEOUT, 10L ) ) ) return false;
 
 	Status( "Active" );
 	//if( !Verify( curl_easy_perform( m_pCurl ) ) )
@@ -310,21 +313,21 @@ bool	CCurlTransfer::Perform( const std::string &_url )
 				case 401:
 					Status( "Authentication failed\n" );
 					break;
-					
+
 				case 404:
 					Status( "File not found on server\n" );
 					break;
-					
+
 				default:
 					{
 						std::stringstream st;
 						st << "Invalid server response [" << m_HttpCode << "]\n";
-						
+
 						Status( st.str() );
 					}
 					break;
 			}
-			
+
 			//	Todo, (or not) print the remaining ones :)
 			return false;
 		}
@@ -363,9 +366,9 @@ bool	CManager::Startup()
 	m_UserPass = "";
 	m_ProxyUrl = "";
 	m_ProxyUserPass = "";
-	
+
 	m_Aborted = false;
-	
+
 	return true;
 }
 
@@ -395,10 +398,10 @@ CURLcode	CManager::Prepare( CURL *_pCurl )
 	//	Set http authentication if there is one.
 	if( m_UserPass != "" )
 	{
-		curl_easy_setopt(_pCurl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC); 
+		curl_easy_setopt(_pCurl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
 
 		code = curl_easy_setopt( _pCurl, CURLOPT_USERPWD, m_UserPass.c_str() );
-	
+
 		if( code != CURLE_OK )
 			return code;
 	}
@@ -423,7 +426,7 @@ CURLcode	CManager::Prepare( CURL *_pCurl )
 void	CManager::Abort( void )
 {
 	boost::mutex::scoped_lock locker( m_Lock );
-	
+
 	m_Aborted = true;
 }
 
@@ -434,7 +437,7 @@ void	CManager::Abort( void )
 bool	CManager::IsAborted( void )
 {
 	boost::mutex::scoped_lock locker( m_Lock );
-	
+
 	return m_Aborted;
 }
 

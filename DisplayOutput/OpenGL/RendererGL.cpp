@@ -181,9 +181,9 @@ bool	CRendererGL::BeginFrame( void )
 	return true;
 }
 
-void CRendererGL::Verify( const char */*_file*/, const int32 /*_line*/ )
+void CRendererGL::Verify( const char *_file, const int32 _line )
 {
-	/*int error = glGetError();
+	int error = glGetError();
 	if( error != GL_NO_ERROR )
 	{
 		std::string msg = "";
@@ -198,9 +198,16 @@ void CRendererGL::Verify( const char */*_file*/, const int32 /*_line*/ )
 		else msg = "Unrecognized OpenGL error";
 
 		g_Log->Error( "OpenGLError - %s(%d) in %s(%d)", msg.c_str(), error, _file, _line );
-		
-		//ThrowArgs(( "%s in %s(%d)", msg.c_str(), _file, _line ));
-	}*/
+	}
+
+#if defined(GL_EXT_framebuffer_object) && defined(GL_FRAMEBUFFER_EXT) && defined(GL_FRAMEBUFFER_COMPLETE_EXT)
+	if (GLeeEnabled(&_GLEE_EXT_framebuffer_object)) {
+		int fbo_status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
+		if (fbo_status != GL_FRAMEBUFFER_COMPLETE_EXT && fbo_status != 0) {
+			g_Log->Error("OpenGL Framebuffer Incomplete: %x in %s(%d)", fbo_status, _file, _line);
+		}
+	}
+#endif
 }
 
 /*
