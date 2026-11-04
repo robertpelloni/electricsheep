@@ -1,12 +1,9 @@
-# Project Memory & Observations
+# Memory & Architectural Observations
 
-## Architecture Notes
-- The `electricsheep` client relies heavily on C++03/C++98 style coding. Modernization should be done iteratively.
-- OpenGL rendering currently targets legacy APIs (GLee extension loading, fixed-function pipelines, early ARB shaders).
-- FFmpeg is used for the decoding layer (`ContentDecoder/`) using the modern `avcodec_send_packet` / `avcodec_receive_frame` pipeline.
-- Settings UI is externalized into a separate executable built via `wxWidgets` (version 2.9+ requirement).
-
-## Design Preferences
-- Strict documentation governance must be adhered to (update `VERSION.md`, `TODO.md`, `ROADMAP.md`, `CHANGELOG.md`, `HANDOFF.md`, etc., before handoffs).
-- Avoid pulling in new major libraries unless the standard library or currently linked ones (Boost, libcurl, FFmpeg) cannot suffice.
-- Remove `register` storage class, unused dependencies (`glew`), and old deprecated paths (Boost v2 filesystem).
+## UI & Dashboard Architecture
+* The settings dashboard has been modernized into a consolidated, intuitive multi-section design.
+* Tab 1 is dedicated to high-value features: Account authentication and local standard/Gold flock storage cache limits.
+* Tab 2 consolidates animation playback rates, loop counts, seamless filtering, and hardware multi-monitor / frame interpolation settings.
+* Tab 3 unifies distributed generation settings, content directory picking, and network proxy credentials.
+* The system tray is handled via `ESTrayIcon` subclassing `wxTaskBarIcon`, enabling quick screensaver launch and process termination (`KillSheepServers`).
+* In-app telemetry and runtime controls are rendered using Dear ImGui over OpenGL/GLUT in `DisplayOutput/OpenGL/RendererGL.cpp`.

@@ -47,13 +47,13 @@ MyDialog2::MyDialog2( wxWindow* parent, wxWindowID id, const wxString& title, co
 	wxBoxSizer* bSizer3;
 	bSizer3 = new wxBoxSizer( wxHORIZONTAL );
 
-	m_RunButton = new wxButton( this, wxID_ANY, wxT("Run"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_RunButton = new wxButton( this, wxID_ANY, wxT("▶ Run Screensaver"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_RunButton->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
 	m_RunButton->SetToolTip( wxT("Run in a window") );
 
 	bSizer3->Add( m_RunButton, 0, wxALL, 1 );
 
-	m_HelpButton = new wxButton( this, wxID_ANY, wxT("Help"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_HelpButton = new wxButton( this, wxID_ANY, wxT("? Online Help"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_HelpButton->SetToolTip( wxT("Launch online help") );
 
 	bSizer3->Add( m_HelpButton, 0, wxALL, 1 );
@@ -159,7 +159,7 @@ MyDialog2::MyDialog2( wxWindow* parent, wxWindowID id, const wxString& title, co
 	m_Basic->SetSizer( bSizer5 );
 	m_Basic->Layout();
 	bSizer5->Fit( m_Basic );
-	m_notebook2->AddPage( m_Basic, wxT("Account"), true );
+	m_notebook2->AddPage( m_Basic, wxT("★ Account & Flock"), true );
 	m_Flock = new wxPanel( m_notebook2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer52;
 	bSizer52 = new wxBoxSizer( wxVERTICAL );
@@ -252,7 +252,7 @@ MyDialog2::MyDialog2( wxWindow* parent, wxWindowID id, const wxString& title, co
 	m_Flock->SetSizer( bSizer52 );
 	m_Flock->Layout();
 	bSizer52->Fit( m_Flock );
-	m_notebook2->AddPage( m_Flock, wxT("Flock"), false );
+	m_notebook2->AddPage( m_Flock, wxT("Flock Cache Quotas"), false );
 	m_Playback = new wxPanel( m_notebook2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer40;
 	bSizer40 = new wxBoxSizer( wxVERTICAL );
@@ -307,7 +307,7 @@ MyDialog2::MyDialog2( wxWindow* parent, wxWindowID id, const wxString& title, co
 	m_Playback->SetSizer( bSizer40 );
 	m_Playback->Layout();
 	bSizer40->Fit( m_Playback );
-	m_notebook2->AddPage( m_Playback, wxT("Playback"), false );
+	m_notebook2->AddPage( m_Playback, wxT("⚙ Animation & Playback"), false );
 	m_Display = new wxPanel( m_notebook2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer77;
 	bSizer77 = new wxBoxSizer( wxVERTICAL );
@@ -399,7 +399,7 @@ MyDialog2::MyDialog2( wxWindow* parent, wxWindowID id, const wxString& title, co
 	m_Display->SetSizer( bSizer77 );
 	m_Display->Layout();
 	bSizer77->Fit( m_Display );
-	m_notebook2->AddPage( m_Display, wxT("Display"), false );
+	m_notebook2->AddPage( m_Display, wxT("Display & Monitors"), false );
 	m_Proxy = new wxPanel( m_notebook2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer36;
 	bSizer36 = new wxBoxSizer( wxVERTICAL );
@@ -446,7 +446,7 @@ MyDialog2::MyDialog2( wxWindow* parent, wxWindowID id, const wxString& title, co
 	m_Proxy->SetSizer( bSizer36 );
 	m_Proxy->Layout();
 	bSizer36->Fit( m_Proxy );
-	m_notebook2->AddPage( m_Proxy, wxT("Proxy"), false );
+	m_notebook2->AddPage( m_Proxy, wxT("Network Proxy"), false );
 	m_Advanced = new wxPanel( m_notebook2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	m_Advanced->SetToolTip( wxT("Advanced client settings") );
 
@@ -586,7 +586,7 @@ MyDialog2::MyDialog2( wxWindow* parent, wxWindowID id, const wxString& title, co
 	m_Advanced->SetSizer( bSizer12 );
 	m_Advanced->Layout();
 	bSizer12->Fit( m_Advanced );
-	m_notebook2->AddPage( m_Advanced, wxT("Advanced"), false );
+	m_notebook2->AddPage( m_Advanced, wxT("🔧 Distributed Generator"), false );
 	m_About = new wxPanel( m_notebook2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer48;
 	bSizer48 = new wxBoxSizer( wxVERTICAL );
@@ -597,7 +597,7 @@ MyDialog2::MyDialog2( wxWindow* parent, wxWindowID id, const wxString& title, co
 	m_About->SetSizer( bSizer48 );
 	m_About->Layout();
 	bSizer48->Fit( m_About );
-	m_notebook2->AddPage( m_About, wxT("About"), false );
+	m_notebook2->AddPage( m_About, wxT("ℹ About & Credits"), false );
 
 	bSizer4->Add( m_notebook2, 1, wxALL, 5 );
 
