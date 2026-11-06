@@ -1,3 +1,4 @@
+#include "Settings.h"
 #include	<stdint.h>
 #include	<string.h>
 #ifdef LINUX_GNU
@@ -222,29 +223,194 @@ bool	CRendererGL::EndFrame( bool drawn )
 {
 	SetCurrentGLContext();
 
-	// Render ImGui
+	// Render Dear ImGui Interactive HUD & Unified Dashboard Overlay
+	static bool s_showDashboard = false;
+	static bool s_hudVisible = true;
 
-
-	// ImGui Overlay
-	ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_FirstUseEver);
-	ImGui::SetNextWindowBgAlpha(0.35f); // Transparent background
-	if (ImGui::Begin("ElectricSheep HUD", NULL, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav))
+	// Seamless F1 toggle for HUD & Dashboard overlay
+	if (ImGui::IsKeyPressed(ImGuiKey_F1, false))
 	{
-		ImGui::Text("ElectricSheep V3 (Phase 4 UI)");
-		ImGui::Separator();
-		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+		if (!s_hudVisible)
+		{
+			s_hudVisible = true;
+			s_showDashboard = false;
+		}
+		else if (!s_showDashboard)
+		{
+			s_showDashboard = true;
+		}
+		else
+		{
+			s_hudVisible = false;
+			s_showDashboard = false;
+		}
+	}
 
-        // We can expose the global config settings here later
-        if (ImGui::Button("Preferences")) {
-            // Open preferences
-        }
+	ImGui::SetNextWindowPos(ImVec2(12, 12), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowBgAlpha(0.65f);
+	if (s_hudVisible && ImGui::Begin("Electric Sheep Live Telemetry", &s_hudVisible, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings))
+	{
+		ImGui::TextColored(ImVec4(0.3f, 0.9f, 1.0f, 1.0f), "Electric Sheep Modernized Engine");
+		ImGui::Separator();
+		ImGui::Text("Render: %.2f FPS (%.2f ms/frame)", ImGui::GetIO().Framerate, 1000.0f / (ImGui::GetIO().Framerate > 0 ? ImGui::GetIO().Framerate : 60.0f));
+		if (ImGui::IsItemHovered())
+			ImGui::SetTooltip("Real-time GPU frame presentation frequency and delta calculation.");
+
+		ImGui::Spacing();
+		if (ImGui::Button(s_showDashboard ? "Hide Settings Dashboard" : "Open Control Dashboard"))
+		{
+			s_showDashboard = !s_showDashboard;
+		}
+		if (ImGui::IsItemHovered())
+			ImGui::SetTooltip("Toggle in-app unified parameter configuration overlay.");
+
+		ImGui::SameLine();
+		if (ImGui::Button("External Preferences"))
+		{
+#ifdef LINUX_GNU
+			int ret = system("electricsheep-preferences &");
+			(void)ret;
+#elif defined(WIN32)
+			int ret = system("electricsheep-preferences.exe &");
+			(void)ret;
+#endif
+		}
+		if (ImGui::IsItemHovered())
+			ImGui::SetTooltip("Launch native system configuration dialog window.");
+
+		ImGui::TextDisabled("Hotkeys: F1 HUD | Up/Down Vote | ESC Quit");
 	}
 	ImGui::End();
 
+	if (s_showDashboard)
+	{
+		ImGui::SetNextWindowPos(ImVec2(30, 80), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowSize(ImVec2(480, 420), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowBgAlpha(0.85f);
+		if (ImGui::Begin("Unified Control Dashboard", &s_showDashboard))
+		{
+			if (ImGui::BeginTabBar("DashboardTabs"))
+			{
+				if (ImGui::BeginTabItem("★ Flock & Cache"))
+				{
+					ImGui::TextColored(ImVec4(1.0f, 0.8f, 0.2f, 1.0f), "Local Flock Storage & Disk Cache");
+					ImGui::Separator();
 
+					int freeCacheMb = g_Settings()->Get("settings.content.cache_size", 2000);
+					int goldCacheMb = g_Settings()->Get("settings.content.cache_size_gold", 2000);
+					bool unlimitedCache = g_Settings()->Get("settings.content.unlimited_cache", false);
 
-	// ImGui Overlay
+					if (ImGui::Checkbox("Unlimited Standard Cache", &unlimitedCache))
+					{
+						g_Settings()->Set("settings.content.unlimited_cache", unlimitedCache);
+					}
+					if (ImGui::IsItemHovered())
+						ImGui::SetTooltip("Never purge older flame generations to make space.");
 
+					if (!unlimitedCache)
+					{
+						if (ImGui::SliderInt("Standard Cache (MB)", &freeCacheMb, 200, 20000))
+						{
+							g_Settings()->Set("settings.content.cache_size", (int32)freeCacheMb);
+						}
+						if (ImGui::IsItemHovered())
+							ImGui::SetTooltip("Storage allocated for free flock animations.");
+					}
+
+					if (ImGui::SliderInt("Gold HD Cache (MB)", &goldCacheMb, 500, 50000))
+					{
+						g_Settings()->Set("settings.content.cache_size_gold", (int32)goldCacheMb);
+					}
+					if (ImGui::IsItemHovered())
+						ImGui::SetTooltip("Storage allocated for high-resolution Gold membership sheep.");
+
+					ImGui::Spacing();
+					ImGui::Text("Network & Generator:");
+					bool bgDownload = g_Settings()->Get("settings.content.download_mode", true);
+					bool renderFrames = g_Settings()->Get("settings.generator.enabled", true);
+					if (ImGui::Checkbox("Background HTTP Download", &bgDownload))
+					{
+						g_Settings()->Set("settings.content.download_mode", bgDownload);
+					}
+					if (ImGui::IsItemHovered())
+						ImGui::SetTooltip("Automatically download new sheep flames in the background.");
+					ImGui::SameLine();
+					if (ImGui::Checkbox("Render Compute Frames", &renderFrames))
+					{
+						g_Settings()->Set("settings.generator.enabled", renderFrames);
+					}
+					if (ImGui::IsItemHovered())
+						ImGui::SetTooltip("Contribute compute power to generate new sheep.");
+
+					ImGui::EndTabItem();
+				}
+
+				if (ImGui::BeginTabItem("⚙ Playback & Display"))
+				{
+					ImGui::TextColored(ImVec4(0.4f, 1.0f, 0.5f, 1.0f), "Rendering & Animation Settings");
+					ImGui::Separator();
+
+					float decodeFps = (float)g_Settings()->Get("settings.player.player_fps", 20.0);
+					float displayFps = (float)g_Settings()->Get("settings.player.display_fps", 60.0);
+					int repeatLoops = g_Settings()->Get("settings.player.LoopIterations", 2);
+					bool vsync = g_Settings()->Get("settings.player.vbl_sync", false);
+					bool seamless = g_Settings()->Get("settings.player.SeamlessPlayback", false);
+
+					if (ImGui::SliderFloat("Decode Framerate", &decodeFps, 10.0f, 60.0f, "%.1f FPS"))
+					{
+						g_Settings()->Set("settings.player.player_fps", (double)decodeFps);
+					}
+					if (ImGui::IsItemHovered())
+						ImGui::SetTooltip("Video decoding rate for raw sheep frames.");
+
+					if (ImGui::SliderFloat("Display Refresh", &displayFps, 30.0f, 144.0f, "%.0f Hz"))
+					{
+						g_Settings()->Set("settings.player.display_fps", (double)displayFps);
+					}
+					if (ImGui::IsItemHovered())
+						ImGui::SetTooltip("Target presentation refresh rate for shader interpolation.");
+
+					if (ImGui::SliderInt("Loop Iterations", &repeatLoops, 1, 10))
+					{
+						g_Settings()->Set("settings.player.LoopIterations", repeatLoops);
+					}
+					if (ImGui::IsItemHovered())
+						ImGui::SetTooltip("Number of times each sheep plays before morphing.");
+
+					if (ImGui::Checkbox("V-Sync (Vertical Synchronization)", &vsync))
+					{
+						g_Settings()->Set("settings.player.vbl_sync", vsync);
+					}
+					if (ImGui::IsItemHovered())
+						ImGui::SetTooltip("Lock frame swaps to monitor refresh rate to prevent screen tearing.");
+
+					if (ImGui::Checkbox("Seamless Playback Filtering", &seamless))
+					{
+						g_Settings()->Set("settings.player.SeamlessPlayback", seamless);
+					}
+					if (ImGui::IsItemHovered())
+						ImGui::SetTooltip("Filter abrupt cutaways between disconnected fractal flames.");
+
+					ImGui::EndTabItem();
+				}
+
+				if (ImGui::BeginTabItem("ℹ About & System"))
+				{
+					ImGui::TextColored(ImVec4(0.9f, 0.9f, 0.9f, 1.0f), "Electric Sheep Modernized Engine");
+					ImGui::Separator();
+					ImGui::TextWrapped("Collaborative abstract artwork founded by Scott Draves. Modernized with CMake, Dear ImGui, FFmpeg, and Boost.");
+					ImGui::Spacing();
+					ImGui::Text("Version: 2.7b33-fork-v1.0.6");
+					ImGui::Text("Renderer: OpenGL (Fixed-Function + Shaders)");
+					ImGui::Text("Overlay: Dear ImGui v1.90+ with GLUT Backend");
+					ImGui::EndTabItem();
+				}
+
+				ImGui::EndTabBar();
+			}
+		}
+		ImGui::End();
+	}
 
 	ImGui::Render();
 	ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
