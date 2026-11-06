@@ -227,6 +227,25 @@ bool	CRendererGL::EndFrame( bool drawn )
 	static bool s_showDashboard = false;
 	static bool s_hudVisible = true;
 
+	// Seamless F1 toggle for HUD & Dashboard overlay
+	if (ImGui::IsKeyPressed(ImGuiKey_F1, false))
+	{
+		if (!s_hudVisible)
+		{
+			s_hudVisible = true;
+			s_showDashboard = false;
+		}
+		else if (!s_showDashboard)
+		{
+			s_showDashboard = true;
+		}
+		else
+		{
+			s_hudVisible = false;
+			s_showDashboard = false;
+		}
+	}
+
 	ImGui::SetNextWindowPos(ImVec2(12, 12), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowBgAlpha(0.65f);
 	if (s_hudVisible && ImGui::Begin("Electric Sheep Live Telemetry", &s_hudVisible, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings))
