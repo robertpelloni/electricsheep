@@ -183,7 +183,7 @@ MyDialog2::MyDialog2( wxWindow* parent, wxWindowID id, const wxString& title, co
 	m_staticText7->Wrap( -1 );
 	bSizer9->Add( m_staticText7, 0, wxALL, 5 );
 
-	m_spinCache = new wxTextCtrl( m_Flock, wxID_FREE_FLOCK_MAX_SPACE, wxT("2000"), wxDefaultPosition, wxSize( 64,-1 ), wxTE_CENTRE );
+	m_spinCache = new wxTextCtrl( m_Flock, wxID_FREE_FLOCK_MAX_SPACE, wxT("2000"), wxDefaultPosition, wxSize( 80,-1 ), wxTE_CENTRE );
 	m_spinCache->SetMaxLength( 5 );
 	m_spinCache->SetToolTip( wxT("After the maximum is reached,\nold sheep are deleted to make\nroom for new ones") );
 
@@ -225,7 +225,7 @@ MyDialog2::MyDialog2( wxWindow* parent, wxWindowID id, const wxString& title, co
 	m_staticText20->Wrap( -1 );
 	bSizer43->Add( m_staticText20, 0, wxALL, 5 );
 
-	m_spinGoldCache = new wxTextCtrl( m_Flock, wxID_GOLD_FLOCK_MAX_SPACE, wxT("2000"), wxDefaultPosition, wxSize( 64,-1 ), wxTE_CENTRE );
+	m_spinGoldCache = new wxTextCtrl( m_Flock, wxID_GOLD_FLOCK_MAX_SPACE, wxT("2000"), wxDefaultPosition, wxSize( 80,-1 ), wxTE_CENTRE );
 	m_spinGoldCache->SetMaxLength( 5 );
 	m_spinGoldCache->SetToolTip( wxT("After the maximum is reached,\nold sheep are deleted to make\nroom for new ones") );
 
@@ -264,7 +264,7 @@ MyDialog2::MyDialog2( wxWindow* parent, wxWindowID id, const wxString& title, co
 	m_staticText8->Wrap( -1 );
 	bSizer10->Add( m_staticText8, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_spinDecodeFps = new wxTextCtrl( m_Playback, wxID_SHEEP_PLAYBACK_SPEED, wxT("15"), wxDefaultPosition, wxSize( 42,-1 ), wxTE_CENTRE );
+	m_spinDecodeFps = new wxTextCtrl( m_Playback, wxID_SHEEP_PLAYBACK_SPEED, wxT("15"), wxDefaultPosition, wxSize( 60,-1 ), wxTE_CENTRE );
 	m_spinDecodeFps->SetMaxLength( 5 );
 	m_spinDecodeFps->SetToolTip( wxT("Frames per second (FPS)") );
 
@@ -283,7 +283,7 @@ MyDialog2::MyDialog2( wxWindow* parent, wxWindowID id, const wxString& title, co
 	m_staticText9->Wrap( -1 );
 	bSizer11->Add( m_staticText9, 0, wxALL, 5 );
 
-	m_spinRepeatLoops = new wxSpinCtrl( m_Playback, wxID_REPEAT_LOOPS, wxT("2"), wxDefaultPosition, wxSize( 50,-1 ), wxSP_ARROW_KEYS, 0, 100, 2 );
+	m_spinRepeatLoops = new wxSpinCtrl( m_Playback, wxID_REPEAT_LOOPS, wxT("2"), wxDefaultPosition, wxSize( 70,-1 ), wxSP_ARROW_KEYS, 0, 100, 2 );
 	m_spinRepeatLoops->SetToolTip( wxT("Play the sheep that are\nloops this many times") );
 
 	bSizer11->Add( m_spinRepeatLoops, 0, wxALL|wxSHAPED, 3 );
@@ -332,7 +332,7 @@ MyDialog2::MyDialog2( wxWindow* parent, wxWindowID id, const wxString& title, co
 	m_staticText13->Wrap( -1 );
 	bSizer14->Add( m_staticText13, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_spinMonitor = new wxSpinCtrl( m_Display, wxID_DISPLAY_MONITOR, wxT("0"), wxDefaultPosition, wxSize( 50,-1 ), wxSP_ARROW_KEYS, 0, 3, 0 );
+	m_spinMonitor = new wxSpinCtrl( m_Display, wxID_DISPLAY_MONITOR, wxT("0"), wxDefaultPosition, wxSize( 70,-1 ), wxSP_ARROW_KEYS, 0, 3, 0 );
 	m_spinMonitor->SetToolTip( wxT("If you have multiple monitors and\nare in single mode, then display on\nthis monitor") );
 
 	bSizer14->Add( m_spinMonitor, 0, wxALL, 5 );
@@ -341,7 +341,7 @@ MyDialog2::MyDialog2( wxWindow* parent, wxWindowID id, const wxString& title, co
 	m_staticText111->Wrap( -1 );
 	bSizer14->Add( m_staticText111, 3, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_spinDisplayFps = new wxTextCtrl( m_Display, wxID_DISPLAY_SPEED, wxT("60"), wxDefaultPosition, wxSize( 42,-1 ), wxTE_CENTRE );
+	m_spinDisplayFps = new wxTextCtrl( m_Display, wxID_DISPLAY_SPEED, wxT("60"), wxDefaultPosition, wxSize( 60,-1 ), wxTE_CENTRE );
 	m_spinDisplayFps->SetMaxLength( 5 );
 	m_spinDisplayFps->SetToolTip( wxT("When Interpolation is Linear or\nCubic then the video is upsampled\nto this rate") );
 
