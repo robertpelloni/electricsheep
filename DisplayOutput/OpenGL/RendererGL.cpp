@@ -394,13 +394,54 @@ bool	CRendererGL::EndFrame( bool drawn )
 					ImGui::EndTabItem();
 				}
 
+				if (ImGui::BeginTabItem("🔧 Advanced & Diagnostics"))
+				{
+					ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.3f, 1.0f), "Diagnostic Logging & Engine Tuning");
+					ImGui::Separator();
+
+					bool quietMode = g_Settings()->Get("settings.player.quiet_mode", true);
+					bool debugLog = g_Settings()->Get("settings.app.log", false);
+					bool negVoteDeletes = g_Settings()->Get("settings.content.negvotedeletes", true);
+					bool attribution = g_Settings()->Get("settings.app.attributionpng", true);
+
+					if (ImGui::Checkbox("Quiet Mode (Suppress connection alerts)", &quietMode))
+					{
+						g_Settings()->Set("settings.player.quiet_mode", quietMode);
+					}
+					if (ImGui::IsItemHovered())
+						ImGui::SetTooltip("Silence transient network status notices on screen.");
+
+					if (ImGui::Checkbox("Enable Detailed Debug Logging", &debugLog))
+					{
+						g_Settings()->Set("settings.app.log", debugLog);
+					}
+					if (ImGui::IsItemHovered())
+						ImGui::SetTooltip("Record verbose tracing information to ~/.electricsheep/Logs/");
+
+					if (ImGui::Checkbox("Down-Vote Immediately Deletes Sheep", &negVoteDeletes))
+					{
+						g_Settings()->Set("settings.content.negvotedeletes", negVoteDeletes);
+					}
+					if (ImGui::IsItemHovered())
+						ImGui::SetTooltip("Pressing Down Arrow deletes current sheep from local disk and notifies server.");
+
+					if (ImGui::Checkbox("Periodic Artist Attribution Watermark", &attribution))
+					{
+						g_Settings()->Set("settings.app.attributionpng", attribution);
+					}
+					if (ImGui::IsItemHovered())
+						ImGui::SetTooltip("Briefly display sheep artist watermark every 10 minutes.");
+
+					ImGui::EndTabItem();
+				}
+
 				if (ImGui::BeginTabItem("ℹ About & System"))
 				{
 					ImGui::TextColored(ImVec4(0.9f, 0.9f, 0.9f, 1.0f), "Electric Sheep Modernized Engine");
 					ImGui::Separator();
 					ImGui::TextWrapped("Collaborative abstract artwork founded by Scott Draves. Modernized with CMake, Dear ImGui, FFmpeg, and Boost.");
 					ImGui::Spacing();
-					ImGui::Text("Version: 2.7b33-fork-v1.0.6");
+					ImGui::Text("Version: 2.7b33-fork-v1.1.0");
 					ImGui::Text("Renderer: OpenGL (Fixed-Function + Shaders)");
 					ImGui::Text("Overlay: Dear ImGui v1.90+ with GLUT Backend");
 					ImGui::EndTabItem();
