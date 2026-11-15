@@ -1,16 +1,27 @@
 # Session Handoff Summary
 
 ## Context & State
-* **Current Phase**: Phase 2 UI Overhaul (ImGui Integration) - **COMPLETED**
-* **Next Phase**: Final Code Refactoring / Release Preparation
+* **Current Version**: `2.7b33-fork-v1.1.0` (Updated in `VERSION.md`)
+* **State**: Completed Dashboard Consolidation, Tooltip markers, System Tray Integration (`wxTaskBarIcon`), In-App Dear ImGui Overlay Dashboard, and script organization.
 
 ## What was Accomplished
-* **ImGui Window Overlay Built**: Successfully added the `ImGui::Begin` block inside the `RendererGL::EndFrame()` loop to render the UI on top of the OpenGL frames.
-* **Deprecate Legacy Text UI**: Safely removed the legacy text rendering from `Client/client.h` so they do not overlap.
-* **Input Hookup**: Successfully initialized `ImGui_ImplGLUT_InstallFuncs` into the pipeline so the transparent ImGui overlay is interactive via GLUT.
+1. **Consolidated Dashboard UI**:
+   - Reorganized the multi-tab layout into a condensed, high-value architecture (`config.h`, `config.cpp`).
+   - Grouped Account authentication, Membership status, and Flock Disk Cache (Standard & Gold) prominently on the main page.
+   - Combined Playback speed, loop cycles, seamless blending, multi-display configuration, monitor index selection, display refresh, and V-Sync into a unified panel.
+   - Unified distributed generator options, local directory picker with folder launch, and proxy configuration.
+   - Embedded descriptive labels, interaction guidance (such as F1 HUD hotkey tip), and comprehensive tooltips across every control.
+2. **System Tray Integration**:
+   - Added `ESTrayIcon` (`wxTaskBarIcon`) in `MSVC/SettingsGUI/main.h` and `MSVC/SettingsGUI/main.cpp`.
+   - Provided context menu actions to open the dashboard, launch the screensaver, stop/kill running Electric Sheep instances, and exit the application cleanly.
+3. **In-App Dear ImGui Interactive HUD & Dashboard Overlay**:
+   - Overhauled `DisplayOutput/OpenGL/RendererGL.cpp` with a live telemetry window and an interactive multi-tab parameter overlay (Flock & Cache, Playback & Display, About & System).
+   - Added tooltips and a direct launch button for the external preferences dialog.
+4. **Script & Desktop Entry Modernization**:
+   - Modernized `menu-entries/ElectricSheep.desktop` and `menu-entries/electricsheep-saver.desktop` with application actions and desktop categories.
+   - Non-destructively backed up legacy runner scripts to `scripts/archive/`.
+5. **Documentation & Governance**:
+   - Updated `VERSION.md`, `CHANGELOG.md`, `ROADMAP.md`, `TODO.md`, `VISION.md`, `DEPLOY.md`, `IDEAS.md`, `MEMORY.md`, and `HANDOFF.md`.
 
 ## Known Issues / Gotchas
-* We have completed all phases. The project is fully migrated to CMake, runs a modern FFmpeg decoding pipeline, uses asynchronous network polling, and has the Dear ImGui interface functioning over GLUT/OpenGL with zero compiler warnings.
-
-## Next Steps for Successor Model
-1. **Prepare Release**: Read over `CHANGELOG.md` and prepare the codebase for a final build.
+- The application requires an X11 display (or virtual framebuffer like `xvfb-run`) to execute GUI windows and OpenGL contexts. Both `electricsheep` and `electricsheep-preferences` build and run with clean exits.

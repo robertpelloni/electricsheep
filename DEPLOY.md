@@ -2,7 +2,7 @@
 
 ## Prerequisites
 The project requires the following libraries to build:
-- GCC / G++ (C++03 / C++98 support)
+- GCC / G++ (C++03 / C++11 / C++17 support)
 - CMake (`cmake`, `make`)
 - Boost (`system`, `thread`, `filesystem`)
 - FFmpeg (`libavcodec`, `libavformat`, `libswscale`, `libavutil`)
@@ -10,14 +10,14 @@ The project requires the following libraries to build:
 - Lua 5.1 (`liblua5.1-0-dev`)
 - TinyXML (`libtinyxml-dev`)
 - cURL (`libcurl4-openssl-dev`)
-- wxWidgets (for the settings GUI)
+- wxWidgets (`libwxgtk3.2-dev` for the settings GUI and system tray)
 - libgtop2 (`libgtop2-dev`)
 - libpng (`libpng-dev`)
 
 ### Ubuntu/Debian Install
 ```bash
 sudo apt-get update
-sudo apt-get install build-essential autoconf automake libtool pkg-config \
+sudo apt-get install -y build-essential autoconf automake libtool pkg-config \
     libwxgtk3.2-dev libavcodec-dev libavformat-dev libswscale-dev \
     libcurl4-openssl-dev libavutil-dev liblua5.1-0-dev flam3-utils \
     libflam3-dev libgtop2-dev libboost-dev libboost-thread-dev \
@@ -27,12 +27,13 @@ sudo apt-get install build-essential autoconf automake libtool pkg-config \
 
 ## Build Instructions
 1. Configure the build environment:
-   `cmake -B build`
+   `cmake -B build -DCMAKE_BUILD_TYPE=Release`
 2. Compile the project:
    `cmake --build build -j4`
 
 ## Running
-After a successful build, the binary will be located in the `Client/` directory:
-`./build/Client/electricsheep`
-
-*Note: Environment variables for API keys/secrets should be defined in a `.env` file (if applicable) and are not to be committed.*
+After a successful build:
+- Main screensaver client:
+  `./build/Client/electricsheep`
+- Control Dashboard & Preferences:
+  `./build/MSVC/SettingsGUI/electricsheep-preferences`

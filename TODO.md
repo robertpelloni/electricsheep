@@ -10,6 +10,9 @@
 ~~5. **HUD Data Linkage**: Update `Client/client.h` to pull frame data values from the core decoder struct to render metrics visually via the OSD logic.~~ (Completed)
 ~~6. **ImGui Integration**: Add Dear ImGui to the project, update CMake, and replace the legacy rendering mechanisms. Stripped all bloat and isolated contexts into RendererGL.~~ (Completed)
 ~~7. **ImGui Window Configuration**: Build the actual UI windows overlay using the ImGui contexts injected into `RendererGL.cpp` to expose frame metrics and replace the wxWidgets preferences app.~~ (Completed)
+~~8. **Consolidate Dashboard UI**: Reorganize settings dialog into a high-value consolidated dashboard with tooltips and prominent sections.~~ (Completed)
+~~9. **System Tray Integration**: Implement system tray icon (`wxTaskBarIcon`) with process control and quick launch.~~ (Completed)
+~~10. **In-App ImGui Dashboard Overhaul**: Expand in-app ImGui overlay to feature multi-tab telemetry and live parameter adjustments.~~ (Completed)
 
 ## Network Modernization Phase 3 Tasks
-~~8. **Async Networking (Boost.Asio)**: Refactor `ContentDownloader/SheepDownloader.cpp` and `SheepGenerator.cpp` to remove aggressive thread halting (`boost::thread::sleep`) when `curl_multi_perform` encounters failure states. Transition to an event-driven `Boost.Asio` architecture to prevent global render stutter.~~ (Completed)
+~~11. **Async Networking (Boost.Asio)**: Refactor `ContentDownloader/SheepDownloader.cpp` and `SheepGenerator.cpp` to remove aggressive thread halting (`boost::thread::sleep`) when `curl_multi_perform` encounters failure states. Transition to an event-driven `Boost.Asio` architecture to prevent global render stutter.~~ (Completed)
