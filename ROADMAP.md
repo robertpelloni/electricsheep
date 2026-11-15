@@ -17,5 +17,11 @@
 
 ## Phase 4: Expansion & Next Gen Features
 - Support for modern screen resolutions (4K/8K/HDR) and multi-monitor setups.
+
+- Refactor the networking stack to utilize modern asynchronous paradigms.
+- Improve error handling and fallback routines when downloading sheep payload files.
+
+## Phase 4: Expansion (Completed/Polishing)
+- Support for modern screen resolutions (4K/8K) and multi-monitor setups.
 - Potential migration from legacy OpenGL (fixed function pipeline / early ARB shaders) to modern OpenGL (Core Profile) or Vulkan.
 - REST API / Web-based remote dashboard control.
